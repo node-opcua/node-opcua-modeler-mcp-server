@@ -1,0 +1,47 @@
+{
+  "name": "node-opcua-modeler-mcp-server",
+  "version": "1.0.0",
+  "description": "OPC UA Modeler MCP Server — exposes companion spec tools to AI agents",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "node-opcua-modeler-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "catalog/",
+    "README.md",
+    "SKILL.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.25.0"
+  },
+  "keywords": [
+    "opcua",
+    "opc-ua",
+    "mcp",
+    "mcp-server",
+    "node-opcua",
+    "information-model",
+    "nodeset2",
+    "companion-specification",
+    "industrial-automation",
+    "industry-4.0",
+    "iec-62541",
+    "digital-twin",
+    "yaml-to-xml",
+    "ai-agent",
+    "model-context-protocol"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/node-opcua/node-opcua-modeler-mcp-server.git"
+  }
+}
