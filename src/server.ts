@@ -2,13 +2,12 @@
  * ==========================================================================
  * OPC UA Modeler — MCP Server Factory (IP-Safe Version)
  *
- * Creates and configures the MCP server with 6 OPC UA companion-spec
- * discovery tools. All data comes from a static catalog.json file —
- * ZERO dependencies on proprietary @sterfive/* packages.
+ * Creates and configures the MCP server with 9 OPC UA tools:
+ * - 6 LOCAL tools: query the static type catalog (free, offline)
+ * - 3 CLOUD tools: proxy to api.opcua-modeler.sterfive.io
  *
  * Architecture: "Thin Local Shell" per Project Prometheus §1.1
- * - Local tools: query the static type catalog (free, offline)
- * - Cloud tools: proxy to api.opcua-modeler.sterfive.io (Phase 1b)
+ * ZERO dependencies on proprietary @sterfive/* packages.
  *
  * IMPORTANT: Never use console.log() — stdout may be reserved for JSON-RPC.
  * ==========================================================================
@@ -16,6 +15,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { cloudFetch, formatCloudError } from "./cloud.js";
 import {
   findEngineeringUnit,
   getTypeDetails,
@@ -35,7 +35,10 @@ export type ToolName =
   | "list_types"
   | "get_type_details"
   | "search_types"
-  | "find_engineering_unit";
+  | "find_engineering_unit"
+  | "opcua_model_validate"
+  | "opcua_model_generate"
+  | "opcua_model_reverse";
 
 /**
  * Direct tool call handler for testing (bypasses MCP protocol).
@@ -93,7 +96,7 @@ export async function handleToolCall(name: ToolName, args: Record<string, unknow
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "opcua-modeler",
-    version: "1.0.0"
+    version: "1.1.0"
   });
 
   // ── 1. resolve_dependencies ──────────────────────────────────────────
@@ -213,6 +216,110 @@ export function createServer(): McpServer {
       }
       return {
         content: [{ type: "text" as const, text: JSON.stringify(result) }]
+      };
+    }
+  );
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // CLOUD TOOLS — proxy to api.opcua-modeler.sterfive.io (Phase 1b)
+  // These require the SaaS API to be running. Set OPCUA_MODELER_API_KEY
+  // in env for authenticated access (generate/reverse require a key).
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // ── 7. opcua_model_validate ───────────────────────────────────────────
+
+  server.tool(
+    "opcua_model_validate",
+    "Validate an OPC UA YAML model for correctness. Returns diagnostics " +
+      "with severity (error/warning/info), codes, messages, and line numbers. " +
+      "Works without an API key (limited to 5 calls/day). " +
+      "ALWAYS validate before generating.",
+    {
+      yaml: z.string().describe("The full YAML model source to validate")
+    },
+    async ({ yaml }) => {
+      const result = await cloudFetch<{
+        valid: boolean;
+        diagnostics: Array<{ severity: string; code: string; message: string; line?: number }>;
+      }>("/api/v1/validate", yaml, "text/yaml");
+
+      if (!result.ok) {
+        return {
+          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
+          isError: true
+        };
+      }
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result.data) }]
+      };
+    }
+  );
+
+  // ── 8. opcua_model_generate ───────────────────────────────────────────
+
+  server.tool(
+    "opcua_model_generate",
+    "Generate OPC UA NodeSet2.xml and Symbols.CSV from a YAML model. " +
+      "Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
+      "Returns base64-encoded artifacts if the model is valid, " +
+      "or diagnostics if validation fails. " +
+      "Optionally set include_docs=true to also generate markdown documentation.",
+    {
+      yaml: z.string().describe("The full YAML model source to generate from"),
+      include_docs: z.boolean().optional().describe("Set to true to include markdown documentation (slower)")
+    },
+    async ({ yaml, include_docs }) => {
+      const path = include_docs ? "/api/v1/generate?include=docs" : "/api/v1/generate";
+      const result = await cloudFetch<{
+        valid: boolean;
+        artifacts?: {
+          nodeset2_xml: string;
+          symbols_csv: string;
+          documentation_md?: string;
+        };
+        diagnostics: Array<{ severity: string; code: string; message: string; line?: number }>;
+      }>(path, yaml, "text/yaml");
+
+      if (!result.ok) {
+        return {
+          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
+          isError: true
+        };
+      }
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result.data) }]
+      };
+    }
+  );
+
+  // ── 9. opcua_model_reverse ────────────────────────────────────────────
+
+  server.tool(
+    "opcua_model_reverse",
+    "Reverse-engineer a NodeSet2.xml file back into the YAML DSL format. " +
+      "Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
+      "Optionally specify the target namespace URI to extract.",
+    {
+      xml: z.string().describe("The NodeSet2.xml content to reverse-engineer"),
+      namespace_uri: z.string().optional().describe("Target namespace URI to extract (auto-detected if omitted)")
+    },
+    async ({ xml, namespace_uri }) => {
+      const path = namespace_uri
+        ? `/api/v1/reverse?ns=${encodeURIComponent(namespace_uri)}`
+        : "/api/v1/reverse";
+      const result = await cloudFetch<{
+        yaml: string;
+        diagnostics: Array<{ severity: string; code: string; message: string }>;
+      }>(path, xml, "application/xml");
+
+      if (!result.ok) {
+        return {
+          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
+          isError: true
+        };
+      }
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result.data) }]
       };
     }
   );

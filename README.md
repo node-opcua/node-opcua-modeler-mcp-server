@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
-An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 589 types across 22 industrial namespaces, plus 1,533 engineering units.
+An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 589 types across 22 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, and reverse-engineer** OPC UA information models.
 
 Built on [node-opcua](https://github.com/node-opcua/node-opcua), the most widely used OPC UA stack for Node.js.
 
@@ -29,11 +29,16 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "opcua-modeler": {
       "command": "npx",
-      "args": ["-y", "node-opcua-modeler-mcp-server"]
+      "args": ["-y", "node-opcua-modeler-mcp-server"],
+      "env": {
+        "OPCUA_MODELER_API_KEY": "stfv_your_api_key_here"
+      }
     }
   }
 }
 ```
+
+> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (5 free calls/day). It is required for `opcua_model_generate` and `opcua_model_reverse`. Get a free key at [opcua-modeler.sterfive.com](https://opcua-modeler.sterfive.com/settings/api-keys).
 
 ### With any MCP client
 
@@ -132,6 +137,48 @@ Find the official UNECE Rec. 20 engineering unit symbol. Supports fuzzy matching
 ← { "symbol": "bar", "matchType": "exact", "confidence": 1 }
 ```
 
+### `opcua_model_validate` ☁️
+
+Validate an OPC UA YAML model for correctness. Returns diagnostics with severity, codes, messages, and line numbers. Works without an API key (limited to 5 calls/day).
+
+```
+→ opcua_model_validate({ yaml: "namespaces:\n  di:\n..." })
+← {
+    "valid": true,
+    "diagnostics": [
+      { "severity": "warning", "code": "W001", "message": "...", "line": 42 }
+    ]
+  }
+```
+
+### `opcua_model_generate` ☁️
+
+Generate OPC UA NodeSet2.xml and Symbols.CSV from a validated YAML model. Returns base64-encoded artifacts. Requires an API key.
+
+```
+→ opcua_model_generate({ yaml: "namespaces:\n  di:\n...", include_docs: false })
+← {
+    "valid": true,
+    "artifacts": {
+      "nodeset2_xml": "PD94bWwg...",
+      "symbols_csv": "bmFtZSxu..."
+    },
+    "diagnostics": []
+  }
+```
+
+### `opcua_model_reverse` ☁️
+
+Reverse-engineer a NodeSet2.xml file back into the YAML DSL format. Requires an API key.
+
+```
+→ opcua_model_reverse({ xml: "<?xml version=..." })
+← {
+    "yaml": "namespaces:\n  di:\n...",
+    "diagnostics": []
+  }
+```
+
 ## Coverage
 
 ### Companion Specifications (25)
@@ -167,19 +214,23 @@ Find the official UNECE Rec. 20 engineering unit symbol. Supports fuzzy matching
 The server ships with a pre-generated `catalog.json` containing all type information extracted from OPC Foundation's official NodeSet2.xml files via [node-opcua](https://github.com/node-opcua/node-opcua). All queries are answered from this static catalog — **no network required, no API key needed**.
 
 ```
-┌─────────────────────────────────────────┐
-│  node-opcua-modeler-mcp-server          │
-│                                         │
-│  ┌─────────────────────────────────┐    │
-│  │ catalog.json (1.7 MB)           │    │
-│  │ • 25 companion spec registries  │    │
-│  │ • 589 type summaries + details  │    │
-│  │ • 1,533 engineering units       │    │
-│  └─────────────────────────────────┘    │
-│                                         │
-│  6 MCP tools → query the catalog        │
-│  stdio transport (JSON-RPC)             │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  node-opcua-modeler-mcp-server                   │
+│                                                  │
+│  LOCAL TOOLS (offline, free)                      │
+│  ┌────────────────────────────────────────┐       │
+│  │ catalog.json (1.7 MB)                  │       │
+│  │ • 25 companion spec registries         │       │
+│  │ • 589 type summaries + details         │       │
+│  │ • 1,533 engineering units              │       │
+│  └────────────────────────────────────────┘       │
+│  6 tools → query the catalog                     │
+│                                                  │
+│  CLOUD TOOLS (via api.opcua-modeler.sterfive.io) │
+│  3 tools → validate / generate / reverse         │
+│                                                  │
+│  stdio transport (JSON-RPC)                      │
+└──────────────────────────────────────────────────┘
 ```
 
 ## Use Cases
