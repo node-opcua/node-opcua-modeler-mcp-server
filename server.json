@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "io.github.node-opcua/node-opcua-modeler-mcp-server",
   "title": "OPC UA Modeler",
-  "description": "Discover OPC UA companion spec types, resolve namespace dependencies, and look up engineering units for AI-assisted industrial automation modeling",
+  "description": "OPC UA companion spec types, namespace dependencies, and engineering units for AI agents",
   "version": "1.0.1",
   "websiteUrl": "https://opcua-modeler.sterfive.com",
   "repository": {
