@@ -7,7 +7,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "node-opcua-modeler-mcp": "./dist/index.js"
+    "node-opcua-modeler-mcp": "dist/index.js"
   },
   "files": [
     "dist/",
@@ -26,6 +26,7 @@
     "zod": "^3.25.0"
   },
   "devDependencies": {
+    "@types/node": "25.9.1",
     "typescript": "~5.7.3"
   },
   "keywords": [
