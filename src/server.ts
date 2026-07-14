@@ -2,9 +2,9 @@
  * ==========================================================================
  * OPC UA Modeler — MCP Server Factory (IP-Safe Version)
  *
- * Creates and configures the MCP server with 9 OPC UA tools:
+ * Creates and configures the MCP server with 10 OPC UA tools:
  * - 6 LOCAL tools: query the static type catalog (free, offline)
- * - 3 CLOUD tools: proxy to api.opcua-modeler.sterfive.io
+ * - 4 CLOUD tools: proxy to api.opcua-modeler.sterfive.io
  *
  * Architecture: "Thin Local Shell" per Project Prometheus §1.1
  * ZERO dependencies on proprietary @sterfive/* packages.
@@ -15,15 +15,8 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { findEngineeringUnit, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes } from "./catalog.js";
 import { cloudFetch, formatCloudError } from "./cloud.js";
-import {
-  findEngineeringUnit,
-  getTypeDetails,
-  listNamespaces,
-  listTypes,
-  resolveDependencies,
-  searchTypes
-} from "./catalog.js";
 
 // Re-export for testing
 export { findEngineeringUnit, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes };
@@ -38,7 +31,8 @@ export type ToolName =
   | "find_engineering_unit"
   | "opcua_model_validate"
   | "opcua_model_generate"
-  | "opcua_model_reverse";
+  | "opcua_model_reverse"
+  | "opcua_model_create";
 
 /**
  * Direct tool call handler for testing (bypasses MCP protocol).
@@ -96,7 +90,7 @@ export async function handleToolCall(name: ToolName, args: Record<string, unknow
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "opcua-modeler",
-    version: "1.1.0"
+    version: "1.2.0"
   });
 
   // ── 1. resolve_dependencies ──────────────────────────────────────────
@@ -205,7 +199,11 @@ export function createServer(): McpServer {
     "find_engineering_unit",
     "Find the official UNECE Rec. 20 engineering unit symbol for a given description. " +
       "ALWAYS call this before using any engineering unit — NEVER guess unit symbols.",
-    { query: z.string().describe('Description or common name of the unit (e.g. "revolutions per minute", "celsius", "pressure bar")') },
+    {
+      query: z
+        .string()
+        .describe('Description or common name of the unit (e.g. "revolutions per minute", "celsius", "pressure bar")')
+    },
     async ({ query }) => {
       const result = findEngineeringUnit(query);
       if (!result) {
@@ -304,13 +302,45 @@ export function createServer(): McpServer {
       namespace_uri: z.string().optional().describe("Target namespace URI to extract (auto-detected if omitted)")
     },
     async ({ xml, namespace_uri }) => {
-      const path = namespace_uri
-        ? `/api/v1/reverse?ns=${encodeURIComponent(namespace_uri)}`
-        : "/api/v1/reverse";
+      const path = namespace_uri ? `/api/v1/reverse?ns=${encodeURIComponent(namespace_uri)}` : "/api/v1/reverse";
       const result = await cloudFetch<{
         yaml: string;
         diagnostics: Array<{ severity: string; code: string; message: string }>;
       }>(path, xml, "application/xml");
+
+      if (!result.ok) {
+        return {
+          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
+          isError: true
+        };
+      }
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result.data) }]
+      };
+    }
+  );
+
+  // ── 10. opcua_model_create ─────────────────────────────────────────────
+
+  server.tool(
+    "opcua_model_create",
+    "Generate an OPC UA YAML model from a natural language description " +
+      "using AI. Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
+      "The AI will auto-detect relevant companion specs, generate a " +
+      "validated model with documentation, and auto-correct validation errors.",
+    {
+      prompt: z.string().describe("Natural language description of the OPC UA model to generate"),
+      forceSpecs: z.array(z.string()).optional().describe('Companion spec aliases to force (e.g. ["di", "ia"])')
+    },
+    async ({ prompt, forceSpecs }) => {
+      const result = await cloudFetch<{
+        success: boolean;
+        yaml: string;
+        attempts: number;
+        diagnostics: Array<{ severity: string; code: string; message: string }>;
+        model: string;
+        tokens: { input: number; output: number };
+      }>("/api/v1/ai/generate", JSON.stringify({ prompt, forceSpecs, stream: false }), "application/json");
 
       if (!result.ok) {
         return {

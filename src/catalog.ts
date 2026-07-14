@@ -52,6 +52,11 @@ export interface TypeDetails extends TypeSummary {
   properties: MemberSummary[];
   methods: string[];
   interfaces: string[];
+  /**
+   * Alias-prefixed browse paths of all optional children (incl. nested,
+   * dotted paths) — the valid values for the YAML `optionals:` list.
+   */
+  availableOptionals: string[];
 }
 
 export interface EngineeringUnitsData {
@@ -135,10 +140,7 @@ export function searchTypes(query: string): (TypeSummary & { alias: string })[] 
 
   for (const [alias, types] of Object.entries(catalog.types)) {
     for (const t of types) {
-      if (
-        t.browseName.toLowerCase().includes(q) ||
-        (t.description && t.description.toLowerCase().includes(q))
-      ) {
+      if (t.browseName.toLowerCase().includes(q) || (t.description && t.description.toLowerCase().includes(q))) {
         results.push({ ...t, alias });
       }
     }

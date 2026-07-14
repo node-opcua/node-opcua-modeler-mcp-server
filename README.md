@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
-An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 589 types across 22 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, and reverse-engineer** OPC UA information models.
+An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 589 types across 22 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
 
 Built on [node-opcua](https://github.com/node-opcua/node-opcua), the most widely used OPC UA stack for Node.js.
 
@@ -38,7 +38,7 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (5 free calls/day). It is required for `opcua_model_generate` and `opcua_model_reverse`. Get a free key at [opcua-modeler.sterfive.com](https://opcua-modeler.sterfive.com/settings/api-keys).
+> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (5 free calls/day). It is required for `opcua_model_generate`, `opcua_model_reverse`, and `opcua_model_create`. Get a free key at [opcua-modeler.sterfive.com](https://opcua-modeler.sterfive.com/settings/api-keys).
 
 ### With any MCP client
 
@@ -179,6 +179,32 @@ Reverse-engineer a NodeSet2.xml file back into the YAML DSL format. Requires an 
   }
 ```
 
+### `opcua_model_create` ☁️
+
+Generate an OPC UA YAML model from a natural language description using AI. The AI will auto-detect relevant companion specs, generate a validated model with documentation, and auto-correct validation errors. Requires an API key.
+
+```
+→ opcua_model_create({ prompt: "A robotic welding cell with two robot arms, each having 6 axes, temperature monitoring on each motor" })
+← {
+    "success": true,
+    "yaml": "namespaces:\n  di:\n  robotics:\n...",
+    "attempts": 2,
+    "diagnostics": [],
+    "model": "gemini-2.5-pro",
+    "tokens": { "input": 4200, "output": 1800 }
+  }
+
+→ opcua_model_create({ prompt: "A CNC lathe with spindle speed and temperature", forceSpecs: ["di", "cnc"] })
+← {
+    "success": true,
+    "yaml": "namespaces:\n  di:\n  cnc:\n...",
+    "attempts": 1,
+    "diagnostics": [],
+    "model": "gemini-2.5-pro",
+    "tokens": { "input": 3500, "output": 1200 }
+  }
+```
+
 ## Coverage
 
 ### Companion Specifications (25)
@@ -227,7 +253,7 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 │  6 tools → query the catalog                     │
 │                                                  │
 │  CLOUD TOOLS (via api.opcua-modeler.sterfive.io) │
-│  3 tools → validate / generate / reverse         │
+│  4 tools → validate / generate / reverse / create│
 │                                                  │
 │  stdio transport (JSON-RPC)                      │
 └──────────────────────────────────────────────────┘

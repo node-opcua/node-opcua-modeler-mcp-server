@@ -24,9 +24,7 @@ export interface CloudError {
 }
 
 /** Result of a cloud API call — either success JSON or structured error */
-export type CloudResult<T = unknown> =
-  | { ok: true; data: T }
-  | { ok: false; error: CloudError };
+export type CloudResult<T = unknown> = { ok: true; data: T } | { ok: false; error: CloudError };
 
 function getApiUrl(): string {
   return process.env.OPCUA_MODELER_API_URL || DEFAULT_API_URL;
@@ -44,11 +42,7 @@ function getApiKey(): string | undefined {
  * @param contentType - Content-Type header (e.g. "text/yaml", "application/xml")
  * @returns Parsed JSON response or structured error
  */
-export async function cloudFetch<T = unknown>(
-  path: string,
-  body: string,
-  contentType: string
-): Promise<CloudResult<T>> {
+export async function cloudFetch<T = unknown>(path: string, body: string, contentType: string): Promise<CloudResult<T>> {
   const baseUrl = getApiUrl();
   const apiKey = getApiKey();
   const url = `${baseUrl}${path}`;
@@ -101,9 +95,7 @@ export async function cloudFetch<T = unknown>(
           error: {
             error: `Rate limit exceeded.${retryAfter ? ` Try again in ${retryAfter}s.` : ""}`,
             status: 429,
-            hint: upgradeUrl
-              ? `Upgrade your plan at ${upgradeUrl}`
-              : "Reduce request frequency or upgrade your plan."
+            hint: upgradeUrl ? `Upgrade your plan at ${upgradeUrl}` : "Reduce request frequency or upgrade your plan."
           }
         };
       }
@@ -112,7 +104,7 @@ export async function cloudFetch<T = unknown>(
         // Validation error from the API (e.g. malformed YAML)
         let detail = "";
         try {
-          const errBody = await response.json() as { detail?: string; message?: string };
+          const errBody = (await response.json()) as { detail?: string; message?: string };
           detail = errBody.detail || errBody.message || "";
         } catch {
           detail = await response.text();
@@ -130,7 +122,9 @@ export async function cloudFetch<T = unknown>(
         let text = "";
         try {
           text = await response.text();
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         return {
           ok: false,
           error: {
