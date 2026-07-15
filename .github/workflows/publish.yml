@@ -1,0 +1,78 @@
+name: publish
+
+# Full release pipeline, mirroring node-opcua-pki's tag-driven publish:
+#   git tag v1.2.2 && git push --tags   →   npm + MCP registry, in order.
+#
+# npm publishes first (prepublishOnly builds dist/); the MCP registry job
+# runs after, because the registry validates that the npm package version
+# in server.json exists and carries the matching mcpName field.
+#
+# Secrets: NPM_TOKEN (npm automation token) — repo or org secret.
+# The MCP registry needs no secret: GitHub OIDC from a node-opcua-owned
+# repo is granted io.github.node-opcua/* automatically.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      dist-tag:
+        description: "npm dist-tag"
+        required: true
+        default: "latest"
+        type: choice
+        options:
+          - latest
+          - next
+          - beta
+
+permissions:
+  id-token: write # npm provenance + MCP registry OIDC login
+  contents: read
+
+jobs:
+  npm-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify tag matches package.json version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::tag v$TAG_VERSION does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
+
+      - name: Publish to npm (prepublishOnly builds dist/)
+        run: npm publish --provenance --access public --tag "${{ github.event.inputs.dist-tag || 'latest' }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  mcp-registry:
+    needs: npm-publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mcp-publisher
+        run: |
+          curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+          ./mcp-publisher --version
+
+      - name: Login (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish server.json to MCP registry
+        run: ./mcp-publisher publish
