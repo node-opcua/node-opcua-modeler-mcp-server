@@ -38,7 +38,7 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (5 free calls/day). It is required for `opcua_model_generate`, `opcua_model_reverse`, and `opcua_model_create`. Get a free key at [opcua-modeler.sterfive.com](https://opcua-modeler.sterfive.com/settings/api-keys).
+> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (50 free calls/day). It is required for `opcua_model_generate`, `opcua_model_reverse`, and `opcua_model_create`. Get a free key at [opcua-modeler.sterfive.io](https://opcua-modeler.sterfive.io/app/settings/api).
 
 ### With any MCP client
 
@@ -273,7 +273,7 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 ## Related
 
 - [node-opcua](https://github.com/node-opcua/node-opcua) — Full OPC UA stack for Node.js
-- [OPC UA Modeler](https://opcua-modeler.sterfive.com) — Create, validate, and generate OPC UA information models
+- [OPC UA Modeler](https://opcua-modeler.sterfive.io) — Create, validate, and generate OPC UA information models
 - [Model Context Protocol](https://modelcontextprotocol.io) — Open protocol for AI tool integration
 
 ## License

@@ -83,7 +83,7 @@ export async function cloudFetch<T = unknown>(path: string, body: string, conten
           error: {
             error: "Authentication required. Set OPCUA_MODELER_API_KEY in your MCP server config.",
             status: response.status,
-            hint: "Get a free API key at https://opcua-modeler.sterfive.com/settings/api-keys"
+            hint: "Get a free API key at https://opcua-modeler.sterfive.io/app/settings/api"
           }
         };
 
@@ -140,7 +140,7 @@ export async function cloudFetch<T = unknown>(path: string, body: string, conten
         ok: false,
         error: {
           error: `Request timed out after ${TIMEOUT_MS / 1000}s. The server may be unavailable.`,
-          hint: "Check https://opcua-modeler.sterfive.com/status for service status."
+          hint: "Check https://api.opcua-modeler.sterfive.io/api/health for service status."
         }
       };
     }

@@ -60,4 +60,5 @@ The discovery tools above are free and offline. Compiling, validating,
 generating, and reverse-engineering full models
 (`opcua_model_validate`, `opcua_model_generate`, `opcua_model_reverse`,
 `opcua_model_create`) are backed by the Sterfive cloud service — get an API
-key at <https://opcua-modeler.sterfive.com> and set `OPCUA_MODELER_API_KEY`.
+key at <https://opcua-modeler.sterfive.io/app/settings/api> and set
+`OPCUA_MODELER_API_KEY`.

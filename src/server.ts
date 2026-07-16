@@ -230,7 +230,7 @@ export function createServer(): McpServer {
     "opcua_model_validate",
     "Validate an OPC UA YAML model for correctness. Returns diagnostics " +
       "with severity (error/warning/info), codes, messages, and line numbers. " +
-      "Works without an API key (limited to 5 calls/day). " +
+      "Works without an API key (limited to 50 calls/day). " +
       "ALWAYS validate before generating.",
     {
       yaml: z.string().describe("The full YAML model source to validate")
