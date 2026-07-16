@@ -38,7 +38,7 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (50 free calls/day). It is required for `opcua_model_generate`, `opcua_model_reverse`, and `opcua_model_create`. Get a free key at [opcua-modeler.sterfive.io](https://opcua-modeler.sterfive.io/app/settings/api).
+> **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (50 anonymous calls/day). It is required for `opcua_model_generate`, `opcua_model_reverse`, and `opcua_model_create`. Register at [opcua-modeler.sterfive.io](https://opcua-modeler.sterfive.io/signup) and create a key under **Settings → API** — the free tier gives 25 calls/day for 90 days; see [pricing](https://opcua-modeler.sterfive.io/pricing) for paid plans.
 
 ### With any MCP client
 

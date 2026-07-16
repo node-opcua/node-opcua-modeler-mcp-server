@@ -83,7 +83,9 @@ export async function cloudFetch<T = unknown>(path: string, body: string, conten
           error: {
             error: "Authentication required. Set OPCUA_MODELER_API_KEY in your MCP server config.",
             status: response.status,
-            hint: "Get a free API key at https://opcua-modeler.sterfive.io/app/settings/api"
+            hint:
+              "Register at https://opcua-modeler.sterfive.io/signup then create an API key " +
+              "under Settings > API (free tier: 25 calls/day, 90-day trial)."
           }
         };
 
