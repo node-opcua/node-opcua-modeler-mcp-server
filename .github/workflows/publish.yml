@@ -37,10 +37,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # npm TRUSTED PUBLISHING (OIDC): the npmjs.com package is configured
+      # with this repo+workflow as a Trusted Publisher. No token, no
+      # registry-url .npmrc (an empty NODE_AUTH_TOKEN there breaks OIDC
+      # detection) — npm ≥11.5 authenticates via the id-token permission.
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
         run: npm ci
@@ -55,10 +58,8 @@ jobs:
             exit 1
           fi
 
-      - name: Publish to npm (prepublishOnly builds dist/)
+      - name: Publish to npm via OIDC (prepublishOnly builds dist/)
         run: npm publish --provenance --access public --tag "${{ github.event.inputs.dist-tag || 'latest' }}"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   mcp-registry:
     needs: npm-publish
