@@ -15,11 +15,19 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { findEngineeringUnit, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes } from "./catalog.js";
+import {
+  findEngineeringUnit,
+  findReusableBlock,
+  getTypeDetails,
+  listNamespaces,
+  listTypes,
+  resolveDependencies,
+  searchTypes
+} from "./catalog.js";
 import { cloudFetch, formatCloudError } from "./cloud.js";
 
 // Re-export for testing
-export { findEngineeringUnit, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes };
+export { findEngineeringUnit, findReusableBlock, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes };
 
 /** Tool name type */
 export type ToolName =
@@ -28,6 +36,7 @@ export type ToolName =
   | "list_types"
   | "get_type_details"
   | "search_types"
+  | "find_reusable_block"
   | "find_engineering_unit"
   | "opcua_model_validate"
   | "opcua_model_generate"
@@ -66,6 +75,9 @@ export async function handleToolCall(name: ToolName, args: Record<string, unknow
       }
       case "search_types": {
         return { content: [{ type: "text" as const, text: JSON.stringify(searchTypes(args.query as string)) }] };
+      }
+      case "find_reusable_block": {
+        return { content: [{ type: "text" as const, text: JSON.stringify(findReusableBlock(args.query as string)) }] };
       }
       case "find_engineering_unit": {
         const result = findEngineeringUnit(String(args.query ?? ""));
@@ -187,6 +199,25 @@ export function createServer(): McpServer {
     { query: z.string().describe('Search keyword (e.g. "identification", "temperature", "motion")') },
     async ({ query }) => {
       const results = searchTypes(query);
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(results) }]
+      };
+    }
+  );
+
+  // ── 5b. find_reusable_block ───────────────────────────────────────────
+
+  server.tool(
+    "find_reusable_block",
+    "Find reusable Interfaces / AddIns by capability — pass a member name or keyword " +
+      '(e.g. "SerialNumber", "DeviceHealth", "Location") and get the standard blocks that ' +
+      "already expose it. PREFER applying/composing an existing block over redefining its " +
+      "members inline. Interfaces are applied with `interfaces:`; addins (types with a " +
+      "DefaultInstanceBrowseName) are composed with `addIns:`. A single property → use the " +
+      "Interface; a whole named sub-object → use the AddIn.",
+    { query: z.string().describe('Member name or capability keyword (e.g. "SerialNumber", "health", "calibration")') },
+    async ({ query }) => {
+      const results = findReusableBlock(query);
       return {
         content: [{ type: "text" as const, text: JSON.stringify(results) }]
       };

@@ -149,6 +149,102 @@ export function searchTypes(query: string): (TypeSummary & { alias: string })[] 
   return results;
 }
 
+// ── Reusable Block Discovery (interfaces & addins by capability) ─────────
+
+export interface ReusableBlockMatch {
+  /** Alias-prefixed type name, e.g. `di:IVendorNameplateType`. */
+  browseName: string;
+  alias: string;
+  kind: "interface" | "addin";
+  isAbstract: boolean;
+  /** True if this addin type declares a DefaultInstanceBrowseName (composable by default name). */
+  hasDefaultInstanceBrowseName: boolean;
+  /** Member browseNames that matched the query. */
+  matchedMembers: string[];
+  /** All member browseNames (components + properties + methods). */
+  members: string[];
+}
+
+function memberBrowseNames(d: TypeDetails): string[] {
+  return [...d.components.map((m) => m.browseName), ...d.properties.map((m) => m.browseName), ...d.methods];
+}
+
+/** Build the set of interface types (alias:browseName) via a subtypeOf → BaseInterfaceType fixpoint. */
+function buildInterfaceSet(): Set<string> {
+  const catalog = getCatalog();
+  const entries: { key: string; subtypeOf?: string }[] = [];
+  for (const [alias, details] of Object.entries(catalog.typeDetails)) {
+    for (const [bn, d] of Object.entries(details)) {
+      entries.push({ key: `${alias}:${bn}`, subtypeOf: d.subtypeOf });
+    }
+  }
+  const isInterface = new Set<string>();
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const e of entries) {
+      if (isInterface.has(e.key)) continue;
+      if (e.subtypeOf === "ua:BaseInterfaceType" || (e.subtypeOf !== undefined && isInterface.has(e.subtypeOf))) {
+        isInterface.add(e.key);
+        changed = true;
+      }
+    }
+  }
+  return isInterface;
+}
+
+let _interfaceSet: Set<string> | null = null;
+
+/**
+ * Find reusable Interfaces / AddIns by capability — e.g. `find_reusable_block("SerialNumber")`
+ * returns the interfaces/addins that expose a matching member. Matches member browseNames,
+ * plus the block's own name/description. Prefer an existing block over redefining members.
+ */
+export function findReusableBlock(query: string): ReusableBlockMatch[] {
+  const catalog = getCatalog();
+  const q = query.toLowerCase();
+  if (!_interfaceSet) _interfaceSet = buildInterfaceSet();
+
+  const matches: ReusableBlockMatch[] = [];
+  for (const [alias, details] of Object.entries(catalog.typeDetails)) {
+    for (const [bn, d] of Object.entries(details)) {
+      const key = `${alias}:${bn}`;
+      const isInterface = _interfaceSet.has(key);
+      const hasDefaultName = d.properties.some((m) => /defaultinstancebrowsename/i.test(m.browseName));
+      // Only interfaces and addin-capable types are "reusable blocks".
+      if (!isInterface && !hasDefaultName) continue;
+
+      const members = memberBrowseNames(d);
+      const matchedMembers = members.filter((m) => m.toLowerCase().includes(q));
+      const nameMatch = bn.toLowerCase().includes(q) || (d.description?.toLowerCase().includes(q) ?? false);
+      if (matchedMembers.length === 0 && !nameMatch) continue;
+
+      matches.push({
+        browseName: key,
+        alias,
+        kind: isInterface ? "interface" : "addin",
+        isAbstract: d.isAbstract,
+        hasDefaultInstanceBrowseName: hasDefaultName,
+        matchedMembers,
+        members
+      });
+    }
+  }
+  // Rank: member match before name-only; interfaces (the canonical member
+  // definers) before addins; more matched members first; abstract addin bases
+  // after concrete composable ones.
+  matches.sort((a, b) => {
+    const am = a.matchedMembers.length > 0 ? 0 : 1;
+    const bm = b.matchedMembers.length > 0 ? 0 : 1;
+    if (am !== bm) return am - bm;
+    if (a.kind !== b.kind) return a.kind === "interface" ? -1 : 1;
+    if (a.kind === "addin" && a.isAbstract !== b.isAbstract) return a.isAbstract ? 1 : -1;
+    return b.matchedMembers.length - a.matchedMembers.length;
+  });
+  // Cap: this is a "point me at the right block" tool, not an exhaustive dump.
+  return matches.slice(0, 15);
+}
+
 // ── Engineering Unit Lookup ──────────────────────────────────────────────
 
 export interface UnitLookupResult {
