@@ -1,6 +1,8 @@
 # node-opcua-modeler-mcp-server
 
 [![npm version](https://img.shields.io/npm/v/node-opcua-modeler-mcp-server.svg)](https://www.npmjs.com/package/node-opcua-modeler-mcp-server)
+[![npm downloads/month](https://img.shields.io/npm/dm/node-opcua-modeler-mcp-server.svg)](https://www.npmjs.com/package/node-opcua-modeler-mcp-server)
+[![npm downloads total](https://img.shields.io/npm/dt/node-opcua-modeler-mcp-server.svg)](https://www.npmjs.com/package/node-opcua-modeler-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
@@ -272,8 +274,11 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 
 ## Related
 
+- [OPC UA Modeler — web app](https://opcua-modeler.sterfive.io) — Create, validate, and generate OPC UA information models in the browser
+- [Product page](https://www.sterfive.com/product/opcua-modeler) — OPC UA Modeler overview, features, and licensing
+- [Documentation](https://opcua-modeler.doc.sterfive.com) — Guides, YAML DSL reference, and how-tos
+- [Specification reference](https://opcua-modeler.doc.sterfive.com/specification/spec.html) — Rendered OPC UA information-model specification
 - [node-opcua](https://github.com/node-opcua/node-opcua) — Full OPC UA stack for Node.js
-- [OPC UA Modeler](https://opcua-modeler.sterfive.io) — Create, validate, and generate OPC UA information models
 - [Model Context Protocol](https://modelcontextprotocol.io) — Open protocol for AI tool integration
 
 ## License
