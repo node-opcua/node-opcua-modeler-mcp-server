@@ -95,6 +95,12 @@ export function listNamespaces(): CompanionSpecEntry[] {
 /**
  * Resolve the full dependency chain for a set of spec aliases.
  * Returns a topologically sorted list (dependencies before dependents).
+ *
+ * NOTE: this is an intentional standalone copy of the toposort. The published
+ * MCP server ships a frozen `catalog.json` and imports NO `@sterfive/*` package
+ * at runtime (IP-safe, zero-dep), so it cannot reuse ex's `topologicalOrder`.
+ * The catalog `deps` are generated from — and kept in sync with — the ex/KB
+ * registries by `scripts/extract-catalog.ts` + `check-registry-consistency.ts`.
  */
 export function resolveDependencies(aliases: string[]): string[] {
   const registry = getCatalog().registry;
