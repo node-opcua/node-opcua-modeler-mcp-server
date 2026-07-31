@@ -50,6 +50,51 @@ npx node-opcua-modeler-mcp-server
 
 The server communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io).
 
+### Using a local backend instead of the hosted API
+
+If you run the OPC UA Modeler CLI on the same machine, the model tools can be
+served from it instead of the hosted API — your YAML never leaves the host.
+
+Start the server (requires a licence that includes the `serve` entitlement):
+
+```bash
+opcua-modeler serve
+```
+
+Then set one environment variable in your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "opcua-modeler": {
+      "command": "npx",
+      "args": ["-y", "node-opcua-modeler-mcp-server"],
+      "env": {
+        "OPCUA_MODELER_BACKEND": "local"
+      }
+    }
+  }
+}
+```
+
+No API key is needed in this mode — the client discovers the local endpoint and
+its credentials automatically.
+
+| Variable | Values | Purpose |
+|----------|--------|---------|
+| `OPCUA_MODELER_BACKEND` | `cloud` (default), `local` | Which backend serves the model tools |
+| `OPCUA_MODELER_API_KEY` | `stfv_…` | API key, `cloud` backend only |
+| `OPCUA_MODELER_API_URL` | URL | Override the hosted API base URL |
+
+**Notes**
+
+- The two backends are never mixed, and there is no fallback between them. If
+  `local` is selected and no server is running, the call fails with instructions
+  rather than silently sending your model to the hosted API.
+- The seven discovery tools are local to this package and work offline on either
+  setting.
+- `opcua_model_create` (AI generation) is available on the `cloud` backend only.
+
 ## Tools
 
 ### `list_namespaces`
@@ -133,7 +178,7 @@ Find the official UNECE Rec. 20 engineering unit symbol. Supports fuzzy matching
 ← { "symbol": "°C", "matchType": "alias", "confidence": 1 }
 
 → find_engineering_unit({ query: "revolutions per minute" })
-← { "symbol": "rpm", "matchType": "alias", "confidence": 1 }
+← { "symbol": "r/min", "matchType": "alias", "confidence": 1 }
 
 → find_engineering_unit({ query: "bar" })
 ← { "symbol": "bar", "matchType": "exact", "confidence": 1 }
@@ -235,7 +280,7 @@ Generate an OPC UA YAML model from a natural language description using AI. The 
 
 ### Engineering Units
 
-1,533 official UNECE Rec. 20 symbols plus 134 natural language aliases (e.g., "celsius" → °C, "revolutions per minute" → rpm).
+1,533 official UNECE Rec. 20 symbols plus 134 natural language aliases (e.g., "celsius" → °C, "revolutions per minute" → r/min). Every alias resolves to a symbol the modeler engine accepts — the lookup never invents one.
 
 ## How It Works
 

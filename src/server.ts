@@ -2,9 +2,9 @@
  * ==========================================================================
  * OPC UA Modeler — MCP Server Factory (IP-Safe Version)
  *
- * Creates and configures the MCP server with 10 OPC UA tools:
- * - 6 LOCAL tools: query the static type catalog (free, offline)
- * - 4 CLOUD tools: proxy to api.opcua-modeler.sterfive.io
+ * Creates and configures the MCP server with 12 OPC UA tools:
+ * - 7 LOCAL tools: query the static type catalog (free, offline)
+ * - 5 CLOUD tools: proxy to api.opcua-modeler.sterfive.io
  *
  * Architecture: "Thin Local Shell" per Project Prometheus §1.1
  * ZERO dependencies on proprietary @sterfive/* packages.
@@ -25,6 +25,7 @@ import {
   searchTypes
 } from "./catalog.js";
 import { cloudFetch, formatCloudError } from "./cloud.js";
+import { isLocalBackend } from "./local.js";
 
 // Re-export for testing
 export { findEngineeringUnit, findReusableBlock, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes };
@@ -41,7 +42,8 @@ export type ToolName =
   | "opcua_model_validate"
   | "opcua_model_generate"
   | "opcua_model_reverse"
-  | "opcua_model_create";
+  | "opcua_model_create"
+  | "get_dsl_reference";
 
 // ── Tool result helpers ──────────────────────────────────────────────────
 // Shape matches the MCP CallToolResult (a text content block, optional isError).
@@ -214,6 +216,40 @@ export function createServer(): McpServer {
   // in env for authenticated access (generate/reverse require a key).
   // ═══════════════════════════════════════════════════════════════════════
 
+  // ── get_dsl_reference ─────────────────────────────────────────────────
+  // Served from the cloud (not bundled here) so the reference always matches
+  // the validator it precedes, and the open-source package stays content-free.
+
+  server.registerTool(
+    "get_dsl_reference",
+    {
+      description:
+        "Get the grammar reference for the OPC UA modeler YAML DSL: file " +
+        "header, top-level sections, name-prefix conventions, minimal " +
+        "examples, and common mistakes. Call this FIRST before writing any " +
+        "YAML model by hand. Works without an API key.",
+      inputSchema: {}
+    },
+    async () => {
+      const result = await cloudFetch<{ version: string; format: string; reference: string }>(
+        "/api/v1/dsl-reference",
+        "",
+        "",
+        "GET"
+      );
+
+      if (!result.ok) {
+        return {
+          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
+          isError: true
+        };
+      }
+      return {
+        content: [{ type: "text" as const, text: result.data.reference }]
+      };
+    }
+  );
+
   // ── 7. opcua_model_validate ───────────────────────────────────────────
 
   server.registerTool(
@@ -335,6 +371,24 @@ export function createServer(): McpServer {
       }
     },
     async ({ prompt, forceSpecs }) => {
+      // The on-premise backend does not implement AI generation. It would
+      // answer 501, but saying so here avoids a pointless round trip and a
+      // confusing error for an agent that cannot change the backend anyway.
+      if (isLocalBackend()) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: formatCloudError({
+                error: "AI model generation is not available on the on-premise backend.",
+                hint: "Set OPCUA_MODELER_BACKEND=cloud to use the hosted API for this tool. The other tools work on either backend."
+              })
+            }
+          ],
+          isError: true
+        };
+      }
+
       const result = await cloudFetch<{
         success: boolean;
         yaml: string;
