@@ -1,6 +1,6 @@
 {
   "name": "node-opcua-modeler-mcp-server",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "mcpName": "io.github.node-opcua/node-opcua-modeler-mcp-server",
   "description": "OPC UA Modeler MCP Server — exposes companion spec tools to AI agents",
   "type": "module",
@@ -14,7 +14,9 @@
     "catalog/",
     "server.json",
     "README.md",
-    "SKILL.md"
+    "SKILL.md",
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "build": "tsc",
@@ -46,7 +48,7 @@
     "ai-agent",
     "model-context-protocol"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/node-opcua/node-opcua-modeler-mcp-server.git"

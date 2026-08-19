@@ -1,0 +1,21 @@
+OPC UA Modeler MCP Server
+Copyright 2025-2026 Sterfive SAS
+
+This product includes software developed by Sterfive SAS
+(https://www.sterfive.com).
+
+"OPC UA Modeler", "Sterfive" and the Sterfive logo are trademarks of
+Sterfive SAS. The Apache License, Version 2.0 under which this software is
+distributed grants no rights to use these trademarks (see Section 6 of the
+licence). Forks and derivative works must not present themselves as the
+official OPC UA Modeler MCP Server or as endorsed by Sterfive.
+
+"OPC UA" is a trademark of the OPC Foundation. The catalog shipped with this
+package is derived from companion-specification NodeSet2.xml files published
+by the OPC Foundation and its joint working groups; the underlying
+specifications remain the property of their respective owners.
+
+The hosted OPC UA Modeler API (opcua-modeler.sterfive.io) that this client
+talks to is a separate service governed by the Sterfive API Terms of Use, and
+the OPC UA Modeler CLI / `opcua-modeler serve` are separate products governed
+by the Sterfive commercial licence. Neither is covered by this licence.

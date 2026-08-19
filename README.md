@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/node-opcua-modeler-mcp-server.svg)](https://www.npmjs.com/package/node-opcua-modeler-mcp-server)
 [![npm downloads/month](https://img.shields.io/npm/dm/node-opcua-modeler-mcp-server.svg)](https://www.npmjs.com/package/node-opcua-modeler-mcp-server)
 [![npm downloads total](https://img.shields.io/npm/dt/node-opcua-modeler-mcp-server.svg)](https://www.npmjs.com/package/node-opcua-modeler-mcp-server)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
 An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 589 types across 22 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
@@ -326,6 +326,18 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 - [node-opcua](https://github.com/node-opcua/node-opcua) — Full OPC UA stack for Node.js
 - [Model Context Protocol](https://modelcontextprotocol.io) — Open protocol for AI tool integration
 
-## License
+## Licensing
 
-MIT © [Sterfive](https://www.sterfive.com)
+Three layers, stated once:
+
+| What | Licence |
+|------|---------|
+| **This package** (`node-opcua-modeler-mcp-server`, the MCP client and its catalog) | [Apache License 2.0](./LICENSE) from version 1.5.0 — see [NOTICE](./NOTICE) for trademark and third-party notices. Versions 1.0–1.4.x were published under MIT and remain so. |
+| **The hosted OPC UA Modeler API** (`opcua-modeler.sterfive.io/api/v1`) that the cloud backend calls | [Sterfive API Terms of Use](https://opcua-modeler.sterfive.io/terms) — anonymous discovery, free and paid plans. |
+| **The OPC UA Modeler CLI and `opcua-modeler serve`** (the local backend) | Sterfive commercial licence — see the [product page](https://www.sterfive.com/product/opcua-modeler). |
+
+"OPC UA Modeler" and "Sterfive" are trademarks of Sterfive SAS; the Apache
+licence grants no rights to them. Contributions are accepted under the
+[Developer Certificate of Origin](./CONTRIBUTING.md).
+
+© [Sterfive SAS](https://www.sterfive.com)
