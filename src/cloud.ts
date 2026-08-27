@@ -118,6 +118,13 @@ async function readErrorBody(response: Response): Promise<{ detail: string; hint
 const KEY_SETTINGS_URL = "https://opcua-modeler.sterfive.io/app/settings/api";
 
 /**
+ * Public documentation. Errors point here instead of carrying pricing or
+ * upgrade copy: the Anthropic Software Directory bans promotional messaging in
+ * tool responses, and a docs URL is a submission requirement anyway.
+ */
+const DOCS_URL = "https://opcua-modeler.doc.sterfive.com";
+
+/**
  * Make an authenticated request to the Sterfive SaaS API.
  *
  * @param path    - API path (e.g. "/v1/validate")
@@ -224,10 +231,14 @@ export async function cloudFetch<T = unknown>(
           };
         }
 
+        // Factual only, by policy — see docs/connector-directory-compliance.md.
+        // The Anthropic Software Directory forbids using tool output to steer
+        // users toward paid plans, so quota figures, trial lengths and upgrade
+        // pitches live in the documentation, not in an error an agent relays.
+        // Saying which env var is read, and where the docs are, is operational
+        // fact and stays.
         const mcpNote =
-          "This MCP server reads the key from OPCUA_MODELER_API_KEY in its config. " +
-          "Register at https://opcua-modeler.sterfive.io/signup then create an API key " +
-          "under Settings > API (free tier: 25 calls/day, 90-day trial).";
+          "This MCP server reads the key from OPCUA_MODELER_API_KEY in its config. " + `See ${DOCS_URL} for how to obtain one.`;
         return {
           ok: false,
           error: {
@@ -242,13 +253,16 @@ export async function cloudFetch<T = unknown>(
         // The server distinguishes burst / daily / discovery limits — surface it.
         const { detail, hint } = await readErrorBody(response);
         const retryAfter = response.headers.get("Retry-After");
-        const upgradeUrl = response.headers.get("X-Upgrade-URL");
+        // X-Upgrade-URL is deliberately NOT relayed: "Upgrade your plan at ..."
+        // is an upsell inside tool output, which the directory policy treats as
+        // promotional messaging. When to retry is operational fact; what to buy
+        // is not. See docs/connector-directory-compliance.md.
         return {
           ok: false,
           error: {
             error: `${detail || "Rate limit exceeded."}${retryAfter ? ` Try again in ${retryAfter}s.` : ""}`,
             status: 429,
-            hint: hint || (upgradeUrl ? `Upgrade your plan at ${upgradeUrl}` : "Reduce request frequency or upgrade your plan.")
+            hint: hint || `Reduce request frequency. Limits are documented at ${DOCS_URL}.`
           }
         };
       }

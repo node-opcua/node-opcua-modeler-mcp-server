@@ -94,6 +94,8 @@ const jsonError = (message: string): ToolResult => ({
 
 interface LocalTool {
   name: ToolName;
+  /** Human-readable label. Required for the Claude connector directory. */
+  title: string;
   description: string;
   /** Zod raw shape advertised to MCP and used to validate args. */
   schema: z.ZodRawShape;
@@ -103,6 +105,7 @@ interface LocalTool {
 
 function defineLocalTool<S extends z.ZodRawShape>(spec: {
   name: ToolName;
+  title: string;
   description: string;
   schema: S;
   run: (args: z.infer<z.ZodObject<S>>) => ToolResult;
@@ -110,6 +113,7 @@ function defineLocalTool<S extends z.ZodRawShape>(spec: {
   const validator = z.object(spec.schema);
   return {
     name: spec.name,
+    title: spec.title,
     description: spec.description,
     schema: spec.schema,
     invoke: (rawArgs: unknown) => {
@@ -130,6 +134,7 @@ function defineLocalTool<S extends z.ZodRawShape>(spec: {
 const LOCAL_TOOLS: LocalTool[] = [
   defineLocalTool({
     name: "resolve_dependencies",
+    title: "Resolve namespace dependencies",
     description:
       "Given one or more companion spec namespace aliases, returns the full " +
       "resolved dependency list that MUST go in the YAML `namespaces:` section. " +
@@ -139,6 +144,7 @@ const LOCAL_TOOLS: LocalTool[] = [
   }),
   defineLocalTool({
     name: "list_namespaces",
+    title: "List companion specifications",
     description:
       "List all well-known OPC UA companion spec namespace aliases with their " +
       "full names, URIs, and dependencies. Use this to discover what namespaces are available.",
@@ -147,6 +153,7 @@ const LOCAL_TOOLS: LocalTool[] = [
   }),
   defineLocalTool({
     name: "list_types",
+    title: "List types in a namespace",
     description:
       "List ALL ObjectTypes, VariableTypes, and InterfaceTypes defined in a " +
       "specific companion spec namespace. " +
@@ -156,6 +163,7 @@ const LOCAL_TOOLS: LocalTool[] = [
   }),
   defineLocalTool({
     name: "get_type_details",
+    title: "Get type details",
     description:
       "Get detailed information about a specific type: its components, properties, " +
       "methods, interfaces, and optional members. Use this to understand a type's " +
@@ -171,6 +179,7 @@ const LOCAL_TOOLS: LocalTool[] = [
   }),
   defineLocalTool({
     name: "search_types",
+    title: "Search types across specs",
     description:
       "Search for types across ALL companion specs by keyword. " +
       "Use this when you don't know which namespace defines a type. " +
@@ -180,6 +189,7 @@ const LOCAL_TOOLS: LocalTool[] = [
   }),
   defineLocalTool({
     name: "find_reusable_block",
+    title: "Find a reusable interface or AddIn",
     description:
       "Find reusable Interfaces / AddIns by capability — pass a member name or keyword " +
       '(e.g. "SerialNumber", "DeviceHealth", "Location") and get the standard blocks that ' +
@@ -192,6 +202,7 @@ const LOCAL_TOOLS: LocalTool[] = [
   }),
   defineLocalTool({
     name: "find_engineering_unit",
+    title: "Find an engineering unit",
     description:
       "Find the official UNECE Rec. 20 engineering unit symbol for a given description. " +
       "ALWAYS call this before using any engineering unit — NEVER guess unit symbols.",
@@ -234,9 +245,24 @@ export function createServer(): McpServer {
   // ── LOCAL TOOLS — registered from the single-source descriptors ───────
   // Same list `handleToolCall` uses, so protocol and test paths never diverge.
 
+  // Annotations are set here rather than per descriptor because all seven
+  // share one profile: they answer from the bundled static catalog, so they
+  // touch nothing (readOnly), return the same answer for the same input
+  // (idempotent), and reach no external system (openWorld false).
+  //
+  // The Claude connector directory requires a title and the applicable
+  // readOnly/destructive hint on every tool, and rejects submissions that
+  // omit them — see EPIC_E19 §6.
   for (const tool of LOCAL_TOOLS) {
-    server.registerTool(tool.name, { description: tool.description, inputSchema: tool.schema }, async (args: unknown) =>
-      tool.invoke(args)
+    server.registerTool(
+      tool.name,
+      {
+        title: tool.title,
+        description: tool.description,
+        inputSchema: tool.schema,
+        annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false }
+      },
+      async (args: unknown) => tool.invoke(args)
     );
   }
 
@@ -253,6 +279,8 @@ export function createServer(): McpServer {
   server.registerTool(
     "get_dsl_reference",
     {
+      title: "Get the DSL grammar reference",
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
       description:
         "Get the grammar reference for the OPC UA modeler YAML DSL: file " +
         "header, top-level sections, name-prefix conventions, minimal " +
@@ -285,6 +313,8 @@ export function createServer(): McpServer {
   server.registerTool(
     "opcua_model_validate",
     {
+      title: "Validate an OPC UA model",
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
       description:
         "Validate an OPC UA YAML model for correctness. Returns diagnostics " +
         "with severity (error/warning/info), codes, messages, and line numbers. " +
@@ -317,6 +347,8 @@ export function createServer(): McpServer {
   server.registerTool(
     "opcua_model_generate",
     {
+      title: "Generate NodeSet2 XML",
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
       description:
         "Generate OPC UA NodeSet2.xml and Symbols.CSV from a YAML model. " +
         "Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
@@ -357,6 +389,8 @@ export function createServer(): McpServer {
   server.registerTool(
     "opcua_model_reverse",
     {
+      title: "Reverse-engineer NodeSet2 XML",
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
       description:
         "Reverse-engineer a NodeSet2.xml file back into the YAML DSL format. " +
         "Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
@@ -390,6 +424,8 @@ export function createServer(): McpServer {
   server.registerTool(
     "opcua_model_create",
     {
+      title: "Create a model from a description",
+      annotations: { readOnlyHint: true, openWorldHint: true },
       description:
         "Generate an OPC UA YAML model from a natural language description " +
         "using AI. Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
