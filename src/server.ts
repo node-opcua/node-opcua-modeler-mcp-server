@@ -13,6 +13,9 @@
  * ==========================================================================
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
@@ -26,6 +29,33 @@ import {
 } from "./catalog.js";
 import { cloudFetch, formatCloudError } from "./cloud.js";
 import { isLocalBackend } from "./local.js";
+
+/**
+ * The version reported in the MCP handshake — read from package.json rather
+ * than duplicated as a literal here.
+ *
+ * A hand-maintained copy had already drifted three minor versions (it said
+ * 1.2.0 against a 1.5.0 package) because `scripts/release.mjs` bumps
+ * package.json and server.json but knew nothing about this file. Deriving it
+ * makes that drift structurally impossible instead of adding a third place
+ * the release script must remember.
+ *
+ * Both `src/` (vitest, in place) and `dist/` (tsc output) sit one level below
+ * the package root, so the same relative path works either way — the pattern
+ * `catalog.ts` already uses to find `catalog/`.
+ */
+const SERVER_VERSION = ((): string => {
+  try {
+    const pkgPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "package.json");
+    const { version } = JSON.parse(fs.readFileSync(pkgPath, "utf-8")) as { version?: string };
+    if (version) return version;
+  } catch {
+    // fall through
+  }
+  // A packaging quirk must not break the handshake itself; an obviously bogus
+  // version is a better failure than no server at all.
+  return "0.0.0";
+})();
 
 // Re-export for testing
 export { findEngineeringUnit, findReusableBlock, getTypeDetails, listNamespaces, listTypes, resolveDependencies, searchTypes };
@@ -198,7 +228,7 @@ export async function handleToolCall(name: ToolName, args: Record<string, unknow
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "opcua-modeler",
-    version: "1.2.0"
+    version: SERVER_VERSION
   });
 
   // ── LOCAL TOOLS — registered from the single-source descriptors ───────

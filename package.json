@@ -1,11 +1,23 @@
 {
   "name": "node-opcua-modeler-mcp-server",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "mcpName": "io.github.node-opcua/node-opcua-modeler-mcp-server",
   "description": "OPC UA Modeler MCP Server — exposes companion spec tools to AI agents",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./http": {
+      "types": "./dist/http.d.ts",
+      "default": "./dist/http.js"
+    },
+    "./package.json": "./package.json",
+    "./catalog/*": "./catalog/*"
+  },
   "bin": {
     "node-opcua-modeler-mcp": "dist/index.js"
   },

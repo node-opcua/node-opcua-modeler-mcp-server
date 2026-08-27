@@ -3,7 +3,7 @@
   "name": "io.github.node-opcua/node-opcua-modeler-mcp-server",
   "title": "OPC UA Modeler",
   "description": "OPC UA companion spec types, namespace dependencies, and engineering units for AI agents",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "websiteUrl": "https://opcua-modeler.sterfive.io",
   "repository": {
     "url": "https://github.com/node-opcua/node-opcua-modeler-mcp-server",
@@ -13,12 +13,18 @@
     {
       "registryType": "npm",
       "identifier": "node-opcua-modeler-mcp-server",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "registryBaseUrl": "https://registry.npmjs.org",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
       }
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.opcua-modeler.sterfive.io/api/mcp"
     }
   ]
 }

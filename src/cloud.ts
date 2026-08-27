@@ -27,10 +27,39 @@
  * ==========================================================================
  */
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import { isLocalBackend, localFetch, readLocalEndpoint } from "./local.js";
 
 const DEFAULT_API_URL = "https://api.opcua-modeler.sterfive.io";
 const TIMEOUT_MS = 30_000;
+
+/**
+ * Per-request overrides, used when this server is HOSTED inside the API it
+ * calls (the Streamable HTTP connector) rather than run on a user's machine.
+ *
+ * In that topology the process-wide env vars are wrong in two ways: the
+ * default base URL sends the call back out through the public hostname and
+ * the reverse proxy into the very same app, and the backend then sees the
+ * container as the client — so every connector user on earth would share one
+ * rate-limit bucket. Both are per-request facts, not process-wide ones, so
+ * they live in AsyncLocalStorage: concurrent requests each keep their own
+ * values, which a module-level variable could not do.
+ *
+ * Unset (the stdio/npx case) → env vars behave exactly as before.
+ */
+export interface RequestContext {
+  /** Base URL override; takes precedence over OPCUA_MODELER_API_URL. */
+  apiUrl?: string;
+  /** Extra headers to send upstream (e.g. x-forwarded-for). */
+  forwardHeaders?: Record<string, string>;
+}
+
+const requestContext = new AsyncLocalStorage<RequestContext>();
+
+/** Run `fn` with `ctx` applied to every cloudFetch it performs. */
+export function withRequestContext<T>(ctx: RequestContext, fn: () => Promise<T>): Promise<T> {
+  return requestContext.run(ctx, fn);
+}
 
 /**
  * The local engine runs in-process on the user's machine, where a large model
@@ -50,7 +79,7 @@ export interface CloudError {
 export type CloudResult<T = unknown> = { ok: true; data: T } | { ok: false; error: CloudError };
 
 function getApiUrl(): string {
-  return process.env.OPCUA_MODELER_API_URL || DEFAULT_API_URL;
+  return requestContext.getStore()?.apiUrl || process.env.OPCUA_MODELER_API_URL || DEFAULT_API_URL;
 }
 
 function getApiKey(): string | undefined {
@@ -130,6 +159,9 @@ export async function cloudFetch<T = unknown>(
       if (apiKey) {
         headers["Authorization"] = `Bearer ${apiKey}`;
       }
+      // Applied last so a hosted caller can attribute the call to the real
+      // end user (x-forwarded-for) rather than to this process.
+      Object.assign(headers, requestContext.getStore()?.forwardHeaders);
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
