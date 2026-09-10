@@ -6,7 +6,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
-An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 589 types across 22 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
+An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 749 types across 28 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
 
 Built on [node-opcua](https://github.com/node-opcua/node-opcua), the most widely used OPC UA stack for Node.js.
 
@@ -99,7 +99,7 @@ its credentials automatically.
 
 ### `list_namespaces`
 
-List all 25 OPC UA companion spec namespaces with aliases, URIs, and dependencies.
+List all 28 OPC UA companion spec namespaces with aliases, URIs, and dependencies.
 
 ```
 → list_namespaces()
@@ -169,6 +169,35 @@ Search for types across **all** companion specs by keyword.
   ]
 ```
 
+### `find_reusable_block`
+
+Find reusable Interfaces and AddIns by capability — pass a member name or keyword
+and get the standard blocks that already expose it. Prefer composing an existing
+block over redefining its members by hand.
+
+```
+→ find_reusable_block({ query: "SerialNumber" })
+← [
+    {
+      "browseName": "di:IVendorNameplateType",
+      "alias": "di",
+      "kind": "interface",
+      "matchedMembers": ["di:SerialNumber"],
+      "members": ["di:Manufacturer", "di:Model", "di:SerialNumber", ...]
+    },
+    {
+      "browseName": "machinery:MachineIdentificationType",
+      "alias": "machinery",
+      "kind": "addin",
+      "matchedMembers": ["di:SerialNumber"],
+      "members": ["machinery:Location", "di:SerialNumber", ...]
+    }
+  ]
+```
+
+`kind` tells you how to apply it: `interface` goes in `interfaces:`, `addin` in
+`addIns:`.
+
 ### `find_engineering_unit`
 
 Find the official UNECE Rec. 20 engineering unit symbol. Supports fuzzy matching and natural language aliases.
@@ -184,9 +213,22 @@ Find the official UNECE Rec. 20 engineering unit symbol. Supports fuzzy matching
 ← { "symbol": "bar", "matchType": "exact", "confidence": 1 }
 ```
 
+### `get_dsl_reference` ☁️
+
+Fetch the YAML DSL grammar reference — the file header, top-level sections, type
+and instance syntax, and a list of common mistakes. **No API key required.**
+
+Served from the API rather than bundled into this package, so the reference an
+agent reads always matches the validator that will judge its output.
+
+```
+→ get_dsl_reference()
+← { "version": "1", "reference": "# OPC UA Modeler YAML DSL ..." }
+```
+
 ### `opcua_model_validate` ☁️
 
-Validate an OPC UA YAML model for correctness. Returns diagnostics with severity, codes, messages, and line numbers. Works without an API key (limited to 5 calls/day).
+Validate an OPC UA YAML model for correctness. Returns diagnostics with severity, codes, messages, and line numbers. Works without an API key (limited to 50 calls/day per IP).
 
 ```
 → opcua_model_validate({ yaml: "namespaces:\n  di:\n..." })
@@ -254,33 +296,38 @@ Generate an OPC UA YAML model from a natural language description using AI. The 
 
 ## Coverage
 
-### Companion Specifications (25)
+### Companion Specifications (28)
 
 | Alias | Specification | Types |
 |-------|--------------|-------|
 | `padim` | OPC UA for PA-DIM | 101 |
 | `ijtBase` | OPC UA for IJT Base | 65 |
 | `machineTool` | OPC UA for Machine Tools | 63 |
+| `scales` | OPC UA for Scales | 58 |
+| `lads` | OPC UA for Laboratory Devices | 53 |
 | `di` | OPC UA for Devices | 44 |
 | `glass` | OPC UA for Glass Manufacturing | 36 |
 | `machineVision` | OPC UA for Machine Vision | 36 |
 | `adi` | OPC UA for Analyzer Devices | 35 |
 | `commercialKitchenEquipment` | OPC UA for Commercial Kitchen Equipment | 35 |
+| `i4aas` | OPC UA for I4AAS | 32 |
 | `robotics` | OPC UA for Robotics | 25 |
 | `ia` | OPC UA for Industrial Automation | 20 |
 | `amb` | OPC UA for AMB | 18 |
 | `autoId` | OPC UA for AutoID | 18 |
+| `iolink` | OPC UA for IO-Link | 16 |
 | `metalForming` | OPC UA for Metal Forming | 16 |
-| `machinery` | OPC UA for Machinery | 15 |
-| `gds` | OPC UA GDS | 14 |
-| `woodworking` | OPC UA for Woodworking | 13 |
-| `cnc` | OPC UA for CNC Systems | 12 |
-| | *…and 5 more* | |
-| **Total** | **22 namespaces** | **589 types** |
+| | *…and 10 more* | |
+| **Total** | **27 namespaces with types** | **749 types** |
+
+The registry holds **28** specs; `irdi` is a dictionary-entry namespace and
+defines no ObjectTypes or VariableTypes. These figures come from
+`catalog/catalog.json` and are asserted against it by
+`test/catalog-coverage.test.ts`, so they cannot drift silently.
 
 ### Engineering Units
 
-1,533 official UNECE Rec. 20 symbols plus 134 natural language aliases (e.g., "celsius" → °C, "revolutions per minute" → r/min). Every alias resolves to a symbol the modeler engine accepts — the lookup never invents one.
+1,533 official UNECE Rec. 20 symbols plus 136 natural language aliases (e.g., "celsius" → °C, "revolutions per minute" → r/min). Every alias resolves to a symbol the modeler engine accepts — the lookup never invents one.
 
 ## How It Works
 
@@ -293,14 +340,15 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 │  LOCAL TOOLS (offline, free)                      │
 │  ┌────────────────────────────────────────┐       │
 │  │ catalog.json (1.7 MB)                  │       │
-│  │ • 25 companion spec registries         │       │
-│  │ • 589 type summaries + details         │       │
+│  │ • 28 companion spec registries         │       │
+│  │ • 749 type summaries + details         │       │
 │  │ • 1,533 engineering units              │       │
 │  └────────────────────────────────────────┘       │
-│  6 tools → query the catalog                     │
+│  7 tools → query the catalog                     │
 │                                                  │
 │  CLOUD TOOLS (via api.opcua-modeler.sterfive.io) │
-│  4 tools → validate / generate / reverse / create│
+│  5 tools → reference / validate / generate /     │
+│           reverse / create                       │
 │                                                  │
 │  stdio transport (JSON-RPC)                      │
 └──────────────────────────────────────────────────┘

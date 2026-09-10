@@ -397,11 +397,20 @@ export function createServer(): McpServer {
         "Optionally specify the target namespace URI to extract.",
       inputSchema: {
         xml: z.string().describe("The NodeSet2.xml content to reverse-engineer"),
-        namespace_uri: z.string().optional().describe("Target namespace URI to extract (auto-detected if omitted)")
+        namespace_uri: z.string().optional().describe("Target namespace URI to extract (auto-detected if omitted)"),
+        self_contained: z
+          .boolean()
+          .optional()
+          .describe(
+            "Return one self-contained .opcua.yaml stream: the model, its NodeId symbol table and dependency declarations (default: bare YAML)"
+          )
       }
     },
-    async ({ xml, namespace_uri }) => {
-      const path = namespace_uri ? `/api/v1/reverse?ns=${encodeURIComponent(namespace_uri)}` : "/api/v1/reverse";
+    async ({ xml, namespace_uri, self_contained }) => {
+      const query = new URLSearchParams();
+      if (namespace_uri) query.set("ns", namespace_uri);
+      if (self_contained) query.set("profile", "self-contained");
+      const path = query.size > 0 ? `/api/v1/reverse?${query.toString()}` : "/api/v1/reverse";
       const result = await cloudFetch<{
         yaml: string;
         diagnostics: Array<{ severity: string; code: string; message: string }>;

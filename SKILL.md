@@ -26,7 +26,7 @@ answers come from the official published NodeSet2.xml files.
 
 ## Workflow
 
-1. **`list_namespaces`** — see the ~28 available companion specs with
+1. **`list_namespaces`** — see the 28 available companion specs with
    aliases, URIs, and dependency lists. Pick the spec(s) matching the domain
    (e.g. `scales` for weighing, `lads` for lab devices).
 2. **`search_types` / `list_types`** — find candidate types by keyword

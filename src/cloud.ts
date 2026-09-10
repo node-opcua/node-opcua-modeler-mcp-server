@@ -121,8 +121,12 @@ const KEY_SETTINGS_URL = "https://opcua-modeler.sterfive.io/app/settings/api";
  * Public documentation. Errors point here instead of carrying pricing or
  * upgrade copy: the Anthropic Software Directory bans promotional messaging in
  * tool responses, and a docs URL is a submission requirement anyway.
+ *
+ * Deep-links to the connector page, which is where "how do I get a key" is
+ * actually answered — the site root only gets you a sidebar. The page carries
+ * an explicit `slug:` so this survives the file being renamed.
  */
-const DOCS_URL = "https://opcua-modeler.doc.sterfive.com";
+const DOCS_URL = "https://opcua-modeler.doc.sterfive.com/docs/mcp-connector";
 
 /**
  * Make an authenticated request to the Sterfive SaaS API.
