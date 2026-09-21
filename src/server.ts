@@ -167,7 +167,8 @@ const LOCAL_TOOLS: LocalTool[] = [
     description:
       "Get detailed information about a specific type: its components, properties, " +
       "methods, interfaces, and optional members. Use this to understand a type's " +
-      "structure before creating instances or subtypes.",
+      "structure before creating instances or subtypes. `specRef`, on the type and on a " +
+      "member, is the link to the section of the specification that defines it: cite it.",
     schema: {
       alias: z.string().describe('Companion spec alias where the type is defined (e.g. "machinery")'),
       browseName: z.string().describe('The type browse name (e.g. "MachineryItemIdentificationType")')

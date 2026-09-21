@@ -35,6 +35,8 @@ export interface TypeSummary {
   namespace: string;
   isAbstract: boolean;
   description?: string;
+  /** The NodeSet2 `<Documentation>` link: where the specification defines the type. */
+  specRef?: string;
   subtypeOf?: string;
 }
 
@@ -45,6 +47,8 @@ export interface MemberSummary {
   typeDefinition?: string;
   modellingRule?: string;
   description?: string;
+  /** The NodeSet2 `<Documentation>` link of the member, when the NodeSet declares one. */
+  specRef?: string;
 }
 
 export interface TypeDetails extends TypeSummary {

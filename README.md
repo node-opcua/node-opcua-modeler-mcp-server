@@ -6,7 +6,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
-An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 749 types across 28 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
+An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 764 types across 30 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
 
 Built on [node-opcua](https://github.com/node-opcua/node-opcua), the most widely used OPC UA stack for Node.js.
 
@@ -99,7 +99,7 @@ its credentials automatically.
 
 ### `list_namespaces`
 
-List all 28 OPC UA companion spec namespaces with aliases, URIs, and dependencies.
+List all 30 OPC UA companion spec namespaces with aliases, URIs, and dependencies.
 
 ```
 → list_namespaces()
@@ -296,7 +296,7 @@ Generate an OPC UA YAML model from a natural language description using AI. The 
 
 ## Coverage
 
-### Companion Specifications (28)
+### Companion Specifications (30)
 
 | Alias | Specification | Types |
 |-------|--------------|-------|
@@ -317,8 +317,8 @@ Generate an OPC UA YAML model from a natural language description using AI. The 
 | `autoId` | OPC UA for AutoID | 18 |
 | `iolink` | OPC UA for IO-Link | 16 |
 | `metalForming` | OPC UA for Metal Forming | 16 |
-| | *…and 10 more* | |
-| **Total** | **27 namespaces with types** | **749 types** |
+| | *…and 12 more* | |
+| **Total** | **29 namespaces with types** | **764 types** |
 
 The registry holds **28** specs; `irdi` is a dictionary-entry namespace and
 defines no ObjectTypes or VariableTypes. These figures come from
@@ -340,8 +340,8 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 │  LOCAL TOOLS (offline, free)                      │
 │  ┌────────────────────────────────────────┐       │
 │  │ catalog.json (1.7 MB)                  │       │
-│  │ • 28 companion spec registries         │       │
-│  │ • 749 type summaries + details         │       │
+│  │ • 30 companion spec registries         │       │
+│  │ • 764 type summaries + details         │       │
 │  │ • 1,533 engineering units              │       │
 │  └────────────────────────────────────────┘       │
 │  7 tools → query the catalog                     │
@@ -367,6 +367,7 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 
 ## Related
 
+- [OPC UA Modeler on GitHub](https://github.com/node-opcua/opcua-modeler) — the open YAML DSL specification, the JSON Schema and example models; the place for questions and issues about the language
 - [OPC UA Modeler — web app](https://opcua-modeler.sterfive.io) — Create, validate, and generate OPC UA information models in the browser
 - [Product page](https://www.sterfive.com/product/opcua-modeler) — OPC UA Modeler overview, features, and licensing
 - [Documentation](https://opcua-modeler.doc.sterfive.com) — Guides, YAML DSL reference, and how-tos
