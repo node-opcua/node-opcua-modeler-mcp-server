@@ -15,7 +15,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { createServer } from "./server.js";
 
 async function main() {
-  const server = createServer();
+  // stdio runs as the user, on their machine: generate and reverse may use their files
+  const server = createServer({ fileAccess: true });
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("opcua-modeler MCP server running on stdio");

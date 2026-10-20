@@ -141,10 +141,12 @@ export function localFetch(
   body: string,
   contentType: string,
   method: "GET" | "POST",
-  timeoutMs: number
+  timeoutMs: number,
+  extraHeaders: Record<string, string> = {}
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const headers: Record<string, string> = {
+      ...extraHeaders,
       Accept: "application/json",
       Authorization: `Bearer ${endpoint.token}`
     };

@@ -28,6 +28,7 @@ import {
   searchTypes
 } from "./catalog.js";
 import { cloudFetch, formatCloudError } from "./cloud.js";
+import { GENERATE_OUTPUT_SCHEMA, type GenerateArgs, generateInputSchema, runGenerate } from "./generate-tool.js";
 import { isLocalBackend } from "./local.js";
 
 /**
@@ -232,12 +233,26 @@ export async function handleToolCall(name: ToolName, args: Record<string, unknow
   return tool.invoke(args);
 }
 
+export interface ServerOptions {
+  /**
+   * Let generate and reverse read and write the user's files by path. Only
+   * the stdio entry point turns this on: it runs as the user, on their
+   * machine. The hosted connector (http.ts) must not — a path there would
+   * name a file on OUR server, and the connector directory requires every
+   * tool to be read-only.
+   */
+  fileAccess?: boolean;
+}
+
 /**
  * Create and configure the MCP server with all OPC UA tools registered.
  * The server is NOT connected to any transport — the caller is responsible
  * for connecting it (e.g., StdioServerTransport or InMemoryTransport).
  */
-export function createServer(): McpServer {
+export function createServer(options: ServerOptions = {}): McpServer {
+  const fileAccess = options.fileAccess === true;
+  // one per MCP session: a stdio process, or one hosted request
+  const generateSession = { streamSuggested: false };
   const server = new McpServer({
     name: "opcua-modeler",
     version: SERVER_VERSION
@@ -349,40 +364,28 @@ export function createServer(): McpServer {
     "opcua_model_generate",
     {
       title: "Generate NodeSet2 XML",
-      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+      // Writing files (stdio, model_path) is not read-only, but it is not
+      // destructive either: it only ever writes the files `opcua-modeler
+      // generate` writes for that model, and the same input writes the same
+      // bytes (an unchanged file is not even touched).
+      annotations: fileAccess
+        ? { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true }
+        : { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
       description:
-        "Generate OPC UA NodeSet2.xml and Symbols.CSV from a YAML model. " +
+        "Generate OPC UA NodeSet2.xml and the symbols CSV from a YAML model. " +
         "Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
-        "Returns base64-encoded artifacts if the model is valid, " +
-        "or diagnostics if validation fails. " +
-        "Optionally set include_docs=true to also generate markdown documentation.",
-      inputSchema: {
-        yaml: z.string().describe("The full YAML model source to generate from"),
-        include_docs: z.boolean().optional().describe("Set to true to include markdown documentation (slower)")
-      }
+        "NodeIds stay stable only if each regeneration passes back the symbols of the previous one: " +
+        'pass symbols_csv, or mode "new" for a first generation, or mode "renumber" to change ids on purpose. ' +
+        "A call with none of these is refused with SYMBOLS_DECISION_REQUIRED. " +
+        (fileAccess
+          ? "Prefer model_path: the paired <name>.model.symbols.csv is then read automatically and the outputs " +
+            "are written beside the model, so nothing large passes through the conversation. "
+          : "Returns base64-encoded artifacts if the model is valid. ") +
+        "The result lists symbol counts (reused/new/dropped), hints and next steps.",
+      inputSchema: generateInputSchema(fileAccess),
+      outputSchema: GENERATE_OUTPUT_SCHEMA
     },
-    async ({ yaml, include_docs }) => {
-      const path = include_docs ? "/api/v1/generate?include=docs" : "/api/v1/generate";
-      const result = await cloudFetch<{
-        valid: boolean;
-        artifacts?: {
-          nodeset2_xml: string;
-          symbols_csv: string;
-          documentation_md?: string;
-        };
-        diagnostics: Array<{ severity: string; code: string; message: string; line?: number }>;
-      }>(path, yaml, "text/yaml");
-
-      if (!result.ok) {
-        return {
-          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
-          isError: true
-        };
-      }
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(result.data) }]
-      };
-    }
+    async (args) => runGenerate(args as GenerateArgs, { fileAccess, session: generateSession })
   );
 
   // ── 9. opcua_model_reverse ────────────────────────────────────────────
@@ -397,7 +400,15 @@ export function createServer(): McpServer {
         "Requires an API key (set OPCUA_MODELER_API_KEY env var). " +
         "Optionally specify the target namespace URI to extract.",
       inputSchema: {
-        xml: z.string().describe("The NodeSet2.xml content to reverse-engineer"),
+        ...(fileAccess
+          ? {
+              xml: z.string().optional().describe("The NodeSet2.xml content. Prefer xml_path for a file."),
+              xml_path: z
+                .string()
+                .optional()
+                .describe("Path to the NodeSet2.xml file: it is read here, and never passes through the conversation.")
+            }
+          : { xml: z.string().describe("The NodeSet2.xml content to reverse-engineer") }),
         namespace_uri: z.string().optional().describe("Target namespace URI to extract (auto-detected if omitted)"),
         self_contained: z
           .boolean()
@@ -407,15 +418,41 @@ export function createServer(): McpServer {
           )
       }
     },
-    async ({ xml, namespace_uri, self_contained }) => {
+    async ({
+      xml,
+      xml_path,
+      namespace_uri,
+      self_contained
+    }: {
+      xml?: string;
+      xml_path?: string;
+      namespace_uri?: string;
+      self_contained?: boolean;
+    }) => {
+      if ((xml === undefined) === (xml_path === undefined)) {
+        return {
+          content: [{ type: "text" as const, text: "INVALID_ARGUMENTS: Pass exactly one of xml and xml_path." }],
+          isError: true
+        };
+      }
+      if (xml_path !== undefined) {
+        try {
+          xml = fs.readFileSync(path.resolve(xml_path), "utf-8");
+        } catch {
+          return {
+            content: [{ type: "text" as const, text: `NODESET_NOT_FOUND: Cannot read ${path.resolve(xml_path)}.` }],
+            isError: true
+          };
+        }
+      }
       const query = new URLSearchParams();
       if (namespace_uri) query.set("ns", namespace_uri);
       if (self_contained) query.set("profile", "self-contained");
-      const path = query.size > 0 ? `/api/v1/reverse?${query.toString()}` : "/api/v1/reverse";
+      const apiPath = query.size > 0 ? `/api/v1/reverse?${query.toString()}` : "/api/v1/reverse";
       const result = await cloudFetch<{
         yaml: string;
         diagnostics: Array<{ severity: string; code: string; message: string }>;
-      }>(path, xml, "application/xml");
+      }>(apiPath, xml as string, "application/xml");
 
       if (!result.ok) {
         return {

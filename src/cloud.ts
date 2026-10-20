@@ -135,13 +135,15 @@ const DOCS_URL = "https://opcua-modeler.doc.sterfive.com/docs/mcp-connector";
  * @param body    - Request body (string); ignored for GET
  * @param contentType - Content-Type header (e.g. "text/yaml", "application/xml"); ignored for GET
  * @param method  - HTTP method (default "POST")
+ * @param extraHeaders - Extra request headers (e.g. X-Symbols-Csv), sent to either backend
  * @returns Parsed JSON response or structured error
  */
 export async function cloudFetch<T = unknown>(
   path: string,
   body: string,
   contentType: string,
-  method: "GET" | "POST" = "POST"
+  method: "GET" | "POST" = "POST",
+  extraHeaders: Record<string, string> = {}
 ): Promise<CloudResult<T>> {
   const local = isLocalBackend();
 
@@ -160,7 +162,7 @@ export async function cloudFetch<T = unknown>(
     let response: Response;
 
     if (local && endpoint?.ok) {
-      response = await localFetch(endpoint.endpoint, path, body, contentType, method, LOCAL_TIMEOUT_MS);
+      response = await localFetch(endpoint.endpoint, path, body, contentType, method, LOCAL_TIMEOUT_MS, extraHeaders);
     } else {
       const headers: Record<string, string> = { Accept: "application/json" };
       if (method !== "GET") {
@@ -170,6 +172,7 @@ export async function cloudFetch<T = unknown>(
       if (apiKey) {
         headers["Authorization"] = `Bearer ${apiKey}`;
       }
+      Object.assign(headers, extraHeaders);
       // Applied last so a hosted caller can attribute the call to the real
       // end user (x-forwarded-for) rather than to this process.
       Object.assign(headers, requestContext.getStore()?.forwardHeaders);

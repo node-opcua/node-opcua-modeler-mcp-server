@@ -54,6 +54,20 @@ answers come from the official published NodeSet2.xml files.
 - Types missing from a spec are a signal to compose (add components) rather
   than to invent look-alike type names.
 
+## Keeping NodeIds stable
+
+`opcua_model_generate` returns a symbols CSV recording every NodeId. Pass it
+back as `symbols_csv` on every later generate of the same model, or the ids
+change and every client bound to them breaks. Save it as
+`<name>.model.symbols.csv` next to the model and commit it. On a first
+generation say `mode: "new"`; to renumber on purpose, `mode: "renumber"`. A
+call that says none of this is refused with `SYMBOLS_DECISION_REQUIRED`.
+
+When the server runs locally, prefer `model_path` over `yaml`: the server then
+reads the paired CSV itself and writes the outputs beside the model, so
+nothing has to be carried between calls. Likewise `xml_path` for
+`opcua_model_reverse`. Follow the `hints` and `next_steps` in each result.
+
 ## Model generation and validation (API key)
 
 The discovery tools above are free and offline. Compiling, validating,

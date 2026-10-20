@@ -6,7 +6,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
 
-An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 764 types across 30 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
+An [MCP server](https://modelcontextprotocol.io) that gives AI agents access to the **OPC UA companion specification type system** — 817 types across 33 industrial namespaces, plus 1,533 engineering units — and lets agents **validate, generate, reverse-engineer, and create** OPC UA information models.
 
 Built on [node-opcua](https://github.com/node-opcua/node-opcua), the most widely used OPC UA stack for Node.js.
 
@@ -99,7 +99,7 @@ its credentials automatically.
 
 ### `list_namespaces`
 
-List all 30 OPC UA companion spec namespaces with aliases, URIs, and dependencies.
+List all 33 OPC UA companion spec namespaces with aliases, URIs, and dependencies.
 
 ```
 → list_namespaces()
@@ -242,23 +242,46 @@ Validate an OPC UA YAML model for correctness. Returns diagnostics with severity
 
 ### `opcua_model_generate` ☁️
 
-Generate OPC UA NodeSet2.xml and Symbols.CSV from a validated YAML model. Returns base64-encoded artifacts. Requires an API key.
+Generate OPC UA NodeSet2.xml and the symbols CSV from a validated YAML model. Requires an API key.
+
+**Keep NodeIds stable.** The symbols CSV records the NodeId given to every node. A regeneration that does not pass it back allocates new ids, which breaks every server and client bound to the old ones. So each call must say what it is:
+
+| Call | Meaning |
+|---|---|
+| `symbols_csv: "<previous CSV>"` | Regeneration: existing nodes keep their ids. Accepts the CSV text, or the base64 `symbols_csv` a previous call returned. |
+| `mode: "new"` | First generation: there are no symbols yet. |
+| `mode: "renumber"` | Allocate new ids on purpose. |
+| a self-contained `.opcua.yaml` stream | It carries its own symbol table, which is replayed. |
+
+A call with none of these is refused before reaching the backend with `SYMBOLS_DECISION_REQUIRED`, and the message says how to retry.
+
+**By path (local stdio server only).** Pass `model_path` instead of `yaml`. The server reads the model and its paired `<name>.model.symbols.csv`, and writes `<name>.Nodeset2.xml`, the CSV and, with `include_docs`, `<name>.md` beside the model (or into `output_dir`): the same files and bytes as `opcua-modeler generate`. Unchanged files are not touched. Nothing large passes through the conversation: for the `demoRobot` sample the result is about 700 characters instead of about 71 KB of base64. `include_artifacts: "inline"` also returns the artefacts. With `OPCUA_MODELER_BACKEND=local`, the model's `deps/` folder is resolved too. The hosted connector never takes paths.
 
 ```
-→ opcua_model_generate({ yaml: "namespaces:\n  di:\n...", include_docs: false })
+→ opcua_model_generate({ model_path: "models/pump.model.yaml" })
 ← {
     "valid": true,
-    "artifacts": {
-      "nodeset2_xml": "PD94bWwg...",
-      "symbols_csv": "bmFtZSxu..."
-    },
-    "diagnostics": []
+    "mode": "update",
+    "symbols_source": "paired-file",
+    "symbols": { "reused": 41, "new": 1, "dropped": 0, "renumbered": 0, "match": 1,
+                 "new_names": ["Pump_Temperature"], "dropped_names": [] },
+    "files": [
+      { "role": "nodeset", "path": ".../pump.model.Nodeset2.xml", "bytes": 54210, "status": "written" },
+      { "role": "symbols", "path": ".../pump.model.symbols.csv", "bytes": 1312, "status": "written" }
+    ],
+    "diagnostics": [],
+    "hints": [{ "code": "SYMBOLS_UPDATED", "level": "info", "message": ".../pump.model.symbols.csv updated: 1 new id(s) (Pump_Temperature)." }],
+    "next_steps": ["Commit pump.model.Nodeset2.xml, pump.model.symbols.csv with the model."]
   }
 ```
 
+**As text.** Pass `yaml`; the artefacts come back base64-encoded in `artifacts.nodeset2_xml` / `artifacts.symbols_csv`, with the same `symbols`, `hints` and `next_steps`.
+
+Hint codes: `INVALID`, `IDS_RENUMBERED`, `IDS_DROPPED`, `SYMBOLS_LOW_MATCH` (the CSV passed probably belongs to another model), `SAVE_SYMBOLS`, `SYMBOLS_UPDATED`, `STREAM_TABLE_NOT_UPDATED`, `WARNINGS_PRESENT`, `PREFER_STREAM`. Refusal codes: `SYMBOLS_DECISION_REQUIRED`, `SYMBOLS_REQUIRED`, `SYMBOLS_FILE_EXISTS`, `MODE_CONFLICT`.
+
 ### `opcua_model_reverse` ☁️
 
-Reverse-engineer a NodeSet2.xml file back into the YAML DSL format. Requires an API key.
+Reverse-engineer a NodeSet2.xml file back into the YAML DSL format. Requires an API key. On the local stdio server, pass `xml_path` instead of `xml`: the file is read by the server, so even a multi-megabyte companion spec never passes through the conversation.
 
 ```
 → opcua_model_reverse({ xml: "<?xml version=..." })
@@ -296,7 +319,7 @@ Generate an OPC UA YAML model from a natural language description using AI. The 
 
 ## Coverage
 
-### Companion Specifications (30)
+### Companion Specifications (33)
 
 | Alias | Specification | Types |
 |-------|--------------|-------|
@@ -311,16 +334,18 @@ Generate an OPC UA YAML model from a natural language description using AI. The 
 | `adi` | OPC UA for Analyzer Devices | 35 |
 | `commercialKitchenEquipment` | OPC UA for Commercial Kitchen Equipment | 35 |
 | `i4aas` | OPC UA for I4AAS | 32 |
+| `fxAc` | OPC UA FX Automation Component | 28 |
 | `robotics` | OPC UA for Robotics | 25 |
+| `fxCm` | OPC UA FX Connection Manager | 24 |
 | `ia` | OPC UA for Industrial Automation | 20 |
 | `amb` | OPC UA for AMB | 18 |
 | `autoId` | OPC UA for AutoID | 18 |
 | `iolink` | OPC UA for IO-Link | 16 |
 | `metalForming` | OPC UA for Metal Forming | 16 |
-| | *…and 12 more* | |
-| **Total** | **29 namespaces with types** | **764 types** |
+| | *…and 13 more* | |
+| **Total** | **32 namespaces with types** | **817 types** |
 
-The registry holds **28** specs; `irdi` is a dictionary-entry namespace and
+The registry holds **33** specs; `irdi` is a dictionary-entry namespace and
 defines no ObjectTypes or VariableTypes. These figures come from
 `catalog/catalog.json` and are asserted against it by
 `test/catalog-coverage.test.ts`, so they cannot drift silently.
@@ -340,8 +365,8 @@ The server ships with a pre-generated `catalog.json` containing all type informa
 │  LOCAL TOOLS (offline, free)                      │
 │  ┌────────────────────────────────────────┐       │
 │  │ catalog.json (1.7 MB)                  │       │
-│  │ • 30 companion spec registries         │       │
-│  │ • 764 type summaries + details         │       │
+│  │ • 33 companion spec registries         │       │
+│  │ • 817 type summaries + details         │       │
 │  │ • 1,533 engineering units              │       │
 │  └────────────────────────────────────────┘       │
 │  7 tools → query the catalog                     │

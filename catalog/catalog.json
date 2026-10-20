@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-09-21T07:43:47.398Z",
+  "generatedAt": "2026-10-09T15:19:59.534Z",
   "registry": [
     {
       "alias": "di",
@@ -1176,6 +1176,78 @@
         "OCT-MSS"
       ],
       "priority": 1
+    },
+    {
+      "alias": "fxData",
+      "name": "OPC UA FX Data",
+      "uri": "http://opcfoundation.org/UA/FX/Data/",
+      "deps": [],
+      "keywords": [
+        "field exchange",
+        "FX",
+        "UAFX",
+        "data",
+        "pubsub",
+        "connection",
+        "connection endpoint",
+        "communication flow",
+        "data set",
+        "data flow",
+        "qos",
+        "variable"
+      ],
+      "priority": 2
+    },
+    {
+      "alias": "fxAc",
+      "name": "OPC UA FX Automation Component",
+      "uri": "http://opcfoundation.org/UA/FX/AC/",
+      "deps": [
+        "di",
+        "fxData"
+      ],
+      "keywords": [
+        "field exchange",
+        "FX",
+        "UAFX",
+        "automation component",
+        "functional entity",
+        "asset",
+        "controller",
+        "drive",
+        "io device",
+        "input data",
+        "output data",
+        "configuration data",
+        "connection endpoint",
+        "offline",
+        "verification"
+      ],
+      "priority": 2
+    },
+    {
+      "alias": "fxCm",
+      "name": "OPC UA FX Connection Manager",
+      "uri": "http://opcfoundation.org/UA/FX/CM/",
+      "deps": [
+        "di",
+        "fxData"
+      ],
+      "keywords": [
+        "field exchange",
+        "FX",
+        "UAFX",
+        "connection manager",
+        "connection configuration set",
+        "connection",
+        "establish connections",
+        "communication flow",
+        "publisher",
+        "subscriber",
+        "pubsub",
+        "engineering"
+      ],
+      "priority": 2
     }
   ],
   "types": {
@@ -7590,6 +7662,436 @@
         "isAbstract": false,
         "specRef": "https://reference.opcfoundation.org/SurfaceTechnology/OCT-MSS/v100/docs/7.7",
         "subtypeOf": "surfaceTechnologyGeneralTypes:STSysType"
+      }
+    ],
+    "fxData": [
+      {
+        "browseName": "AuditUpdateMethodResultEventType",
+        "kind": "ObjectType",
+        "namespace": "fxData",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/8.4",
+        "subtypeOf": "ua:AuditUpdateMethodEventType"
+      }
+    ],
+    "fxAc": [
+      {
+        "browseName": "ConfigurationDataFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.6.2",
+        "subtypeOf": "di:FunctionalGroupType"
+      },
+      {
+        "browseName": "ControlItemFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.5.6",
+        "subtypeOf": "di:FunctionalGroupType"
+      },
+      {
+        "browseName": "AutomationComponentCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.6",
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "ConnectionEndpointsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.8",
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "ControlGroupsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.9",
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "FunctionalEntityCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.7",
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "InputsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.4",
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "OutputsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.5",
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "AuditUaFxEventType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/8.2",
+        "subtypeOf": "ua:AuditEventType"
+      },
+      {
+        "browseName": "AuditConnectionCleanupEventType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/8.3",
+        "subtypeOf": "fxAc:AuditUaFxEventType"
+      },
+      {
+        "browseName": "IAssetExtensionsType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/7.4",
+        "subtypeOf": "ua:BaseInterfaceType"
+      },
+      {
+        "browseName": "IAssetRevisionType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/7.3",
+        "subtypeOf": "ua:BaseInterfaceType"
+      },
+      {
+        "browseName": "IFunctionalEntityType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/7.2",
+        "subtypeOf": "ua:BaseInterfaceType"
+      },
+      {
+        "browseName": "AcDescriptorType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.3",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "AssetConnectorType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "description": "AssetConnectorType provides information about physical connections that are part of an asset",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.4",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "ClampBlockType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "ClampBlockType represents a wire connection block",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.8",
+        "subtypeOf": "fxAc:AssetConnectorType"
+      },
+      {
+        "browseName": "ClampType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "ClampType represents a wire connection",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.7",
+        "subtypeOf": "fxAc:AssetConnectorType"
+      },
+      {
+        "browseName": "SlotType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "SlotType represents a physical slot where a module can attach",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.5",
+        "subtypeOf": "fxAc:AssetConnectorType"
+      },
+      {
+        "browseName": "SocketType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "SocketType represents a physical socket where a cable can be connected",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.6",
+        "subtypeOf": "fxAc:AssetConnectorType"
+      },
+      {
+        "browseName": "AutomationComponentType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "ConnectionEndpointType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.6.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "PubSubConnectionEndpointType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.6.3",
+        "subtypeOf": "fxAc:ConnectionEndpointType"
+      },
+      {
+        "browseName": "ControlGroupType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.5.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "FunctionalEntityType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "FxAssetType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "PublisherCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.7",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "SubscriberCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.8",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "AggregatedHealthType",
+        "kind": "VariableType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/9.1.2",
+        "subtypeOf": "ua:BaseDataVariableType"
+      }
+    ],
+    "fxCm": [
+      {
+        "browseName": "ConnectionManagerCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "subtypeOf": "ua:FolderType"
+      },
+      {
+        "browseName": "ConnectionManagerConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "subtypeOf": "ua:FileType"
+      },
+      {
+        "browseName": "AuditUpdateConnectionConfigurationSetEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "subtypeOf": "ua:AuditWriteUpdateEventType"
+      },
+      {
+        "browseName": "CloseConnectionErrorEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "subtypeOf": "ua:BaseLogEventType"
+      },
+      {
+        "browseName": "EstablishConnectionErrorEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "subtypeOf": "ua:BaseLogEventType"
+      },
+      {
+        "browseName": "ConnectionConfigurationSetEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.5",
+        "subtypeOf": "ua:BaseEventType"
+      },
+      {
+        "browseName": "ConnectionConfigurationSetProcessingFailedEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.8",
+        "subtypeOf": "fxCm:ConnectionConfigurationSetEventType"
+      },
+      {
+        "browseName": "ConnectionConfigurationSetProcessingStartedEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.6",
+        "subtypeOf": "fxCm:ConnectionConfigurationSetEventType"
+      },
+      {
+        "browseName": "ConnectionConfigurationSetProcessingSucceededEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.7",
+        "subtypeOf": "fxCm:ConnectionConfigurationSetEventType"
+      },
+      {
+        "browseName": "ConnectionConfigurationSetStateMachineType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.9.2",
+        "subtypeOf": "ua:FiniteStateMachineType"
+      },
+      {
+        "browseName": "AssetVerificationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.15.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "AutomationComponentConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.14.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "CommunicationFlowConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.13.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "PubSubCommunicationFlowConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.13.3/#6.13.3.2",
+        "subtypeOf": "fxCm:CommunicationFlowConfigurationType"
+      },
+      {
+        "browseName": "CommunicationModelConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.16.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "PubSubCommunicationModelConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.16.3/#6.16.3.2",
+        "subtypeOf": "fxCm:CommunicationModelConfigurationType"
+      },
+      {
+        "browseName": "ConnectionConfigurationSetType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.8.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "ConnectionConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.10.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "ConnectionEndpointConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.11.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "ConnectionEndpointParameterType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.12.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "ConnectionManagerType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.7.2",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "SubscriberConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.13.3/#6.13.3.3",
+        "subtypeOf": "ua:BaseObjectType"
+      },
+      {
+        "browseName": "SecurityKeyServerAddressType",
+        "kind": "VariableType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/9.3.2",
+        "subtypeOf": "ua:BaseDataVariableType"
+      },
+      {
+        "browseName": "ServerAddressType",
+        "kind": "VariableType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/9.2.2",
+        "subtypeOf": "ua:BaseDataVariableType"
       }
     ]
   },
@@ -96978,6 +97480,4102 @@
           "machinery:Monitoring.machinery:Process.surfaceTechnologyOctMss:FillVolume.machineryProcessValues:DeviationAlarm.EnabledState.FalseState",
           "machinery:Monitoring.machinery:Process.surfaceTechnologyOctMss:FillVolume.machineryProcessValues:DeviationAlarm.EnabledState.Name",
           "… (893 more — narrow down with a more specific type)"
+        ]
+      }
+    },
+    "fxData": {
+      "AuditUpdateMethodResultEventType": {
+        "browseName": "AuditUpdateMethodResultEventType",
+        "kind": "ObjectType",
+        "namespace": "fxData",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/8.4",
+        "subtypeOf": "ua:AuditUpdateMethodEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "ua:OutputArguments",
+            "nodeClass": "Property",
+            "dataType": "BaseDataType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:StatusCodeId",
+            "nodeClass": "Property",
+            "dataType": "StatusCode",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:MethodId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:InputArguments",
+            "nodeClass": "Property",
+            "dataType": "BaseDataType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ActionTimeStamp",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Status",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ServerId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientAuditEntryId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientUserId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientApplicationUri",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ClientApplicationUri",
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      }
+    },
+    "fxAc": {
+      "ConfigurationDataFolderType": {
+        "browseName": "ConfigurationDataFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.6.2",
+        "subtypeOf": "di:FunctionalGroupType",
+        "components": [
+          {
+            "browseName": "fxAc:<ConfigurationVariable1>",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "di:<GroupIdentifier>",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "di:UIElement",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "UIElementType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [
+          "fxAc:ClearStoredVariables",
+          "fxAc:ListStoredVariables",
+          "fxAc:SetStoredVariables"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:UIElement",
+          "fxAc:ClearStoredVariables",
+          "fxAc:ListStoredVariables",
+          "fxAc:SetStoredVariables"
+        ]
+      },
+      "ControlItemFolderType": {
+        "browseName": "ControlItemFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.5.6",
+        "subtypeOf": "di:FunctionalGroupType",
+        "components": [
+          {
+            "browseName": "di:Lock",
+            "nodeClass": "Object",
+            "typeDefinition": "LockingServicesType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "di:<GroupIdentifier>",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "di:UIElement",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "UIElementType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "di:MaxInactiveLockTime",
+            "nodeClass": "Property",
+            "dataType": "Duration",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:MaxInactiveLockTime",
+          "di:UIElement"
+        ]
+      },
+      "AutomationComponentCapabilitiesType": {
+        "browseName": "AutomationComponentCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.6",
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxAc:<Capability>",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxAc:CommandBundleRequired",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MaxConnections",
+            "nodeClass": "Variable",
+            "dataType": "UInt32",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MaxConnectionsPerCall",
+            "nodeClass": "Variable",
+            "dataType": "UInt32",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MaxFunctionalEntities",
+            "nodeClass": "Variable",
+            "dataType": "UInt32",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MinConnections",
+            "nodeClass": "Variable",
+            "dataType": "UInt32",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportsPersistence",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:CommandBundleRequired",
+          "fxAc:MaxConnections",
+          "fxAc:MaxConnectionsPerCall",
+          "fxAc:MaxFunctionalEntities",
+          "fxAc:MinConnections",
+          "fxAc:SupportsPersistence"
+        ]
+      },
+      "ConnectionEndpointsFolderType": {
+        "browseName": "ConnectionEndpointsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.8",
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxAc:<ConnectionEndpoint>",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionEndpointType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxAc:CommHealth",
+            "nodeClass": "Variable",
+            "dataType": "CommHealthOptionSet",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:CommHealth"
+        ]
+      },
+      "ControlGroupsFolderType": {
+        "browseName": "ControlGroupsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.9",
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxAc:<ControlGroup>",
+            "nodeClass": "Object",
+            "typeDefinition": "ControlGroupType",
+            "modellingRule": "OptionalPlaceholder"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": []
+      },
+      "FunctionalEntityCapabilitiesType": {
+        "browseName": "FunctionalEntityCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.7",
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxAc:<Capability>",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxAc:FeedbackSignalRequired",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:FeedbackSignalRequired"
+        ]
+      },
+      "InputsFolderType": {
+        "browseName": "InputsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.4",
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxAc:<InputVariable1>",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxAc:SubscriberCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "SubscriberCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:<InputGroup>",
+            "nodeClass": "Object",
+            "typeDefinition": "InputsFolderType",
+            "modellingRule": "OptionalPlaceholder"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:SubscriberCapabilities",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedQos",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedTransportProtocolMappings"
+        ]
+      },
+      "OutputsFolderType": {
+        "browseName": "OutputsFolderType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.5",
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxAc:<OutputVariable1>",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxAc:PublisherCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "PublisherCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:<OutputGroup>",
+            "nodeClass": "Object",
+            "typeDefinition": "OutputsFolderType",
+            "modellingRule": "OptionalPlaceholder"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:PublisherCapabilities",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:PublisherCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:PublisherCapabilities.fxAc:SupportedQos",
+          "fxAc:PublisherCapabilities.fxAc:SupportedTransportProtocolMappings"
+        ]
+      },
+      "AuditUaFxEventType": {
+        "browseName": "AuditUaFxEventType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/8.2",
+        "subtypeOf": "ua:AuditEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "ua:ActionTimeStamp",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Status",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ServerId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientAuditEntryId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientUserId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientApplicationUri",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ClientApplicationUri",
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "AuditConnectionCleanupEventType": {
+        "browseName": "AuditConnectionCleanupEventType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/8.3",
+        "subtypeOf": "fxAc:AuditUaFxEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxAc:RelatedEndpoint",
+            "nodeClass": "Property",
+            "dataType": "RelatedEndpointDataType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:RemovedEndpoint",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ActionTimeStamp",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Status",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ServerId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientAuditEntryId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientUserId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientApplicationUri",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ClientApplicationUri",
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "IAssetExtensionsType": {
+        "browseName": "IAssetExtensionsType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/7.4",
+        "subtypeOf": "ua:BaseInterfaceType",
+        "components": [
+          {
+            "browseName": "fxAc:Connectors",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CurrentCPUUtilization",
+          "di:Diagnostics.fxAc:CurrentMemoryUtilization",
+          "di:Diagnostics.fxAc:MaxCPUUtilization",
+          "di:Diagnostics.fxAc:MaxMemoryUtilization",
+          "di:Diagnostics.fxAc:UpTime",
+          "fxAc:Connectors"
+        ]
+      },
+      "IAssetRevisionType": {
+        "browseName": "IAssetRevisionType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/7.3",
+        "subtypeOf": "ua:BaseInterfaceType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxAc:BuildAssetNumber",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MajorAssetVersion",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MinorAssetVersion",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SubBuildAssetNumber",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [
+          "fxAc:VerifyAsset"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:BuildAssetNumber",
+          "fxAc:MajorAssetVersion",
+          "fxAc:MinorAssetVersion",
+          "fxAc:SubBuildAssetNumber",
+          "fxAc:VerifyAsset"
+        ]
+      },
+      "IFunctionalEntityType": {
+        "browseName": "IFunctionalEntityType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/7.2",
+        "subtypeOf": "ua:BaseInterfaceType",
+        "components": [
+          {
+            "browseName": "fxAc:Capabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalEntityCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ConfigurationData",
+            "nodeClass": "Object",
+            "typeDefinition": "ConfigurationDataFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ConnectionEndpoints",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionEndpointsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ControlGroups",
+            "nodeClass": "Object",
+            "typeDefinition": "ControlGroupsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:InputData",
+            "nodeClass": "Object",
+            "typeDefinition": "InputsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Operational",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:OperationalHealth",
+            "nodeClass": "Variable",
+            "dataType": "OperationalHealthOptionSet",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:OperationalHealthAlarms",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:OutputData",
+            "nodeClass": "Object",
+            "typeDefinition": "OutputsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:PublisherCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "PublisherCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Status",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SubscriberCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "SubscriberCapabilitiesType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:ApplicationIdentifier",
+            "nodeClass": "Property",
+            "dataType": "ApplicationIdentifierDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:AuthorAssignedIdentifier",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:AuthorAssignedVersion",
+            "nodeClass": "Property",
+            "dataType": "FxVersion",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:AuthorUri",
+            "nodeClass": "Property",
+            "dataType": "UriString",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [
+          "fxAc:Verify"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CleanedUpConnectionCount",
+          "di:Diagnostics.fxAc:ErrorConnectionCount",
+          "di:Diagnostics.fxAc:ExistingConnectionCount",
+          "di:Diagnostics.fxAc:FailedConnectionCount",
+          "di:Diagnostics.fxAc:FailedEstablishAttemptsCount",
+          "di:Diagnostics.fxAc:FailedVerificationCount",
+          "di:Diagnostics.fxAc:OperationalConnectionCount",
+          "di:Diagnostics.fxAc:TotalEstablishAttemptsCount",
+          "di:Operational",
+          "di:Operational.di:UIElement",
+          "di:Status",
+          "di:Status.di:UIElement",
+          "fxAc:ApplicationIdentifier",
+          "fxAc:AuthorAssignedIdentifier",
+          "fxAc:AuthorAssignedVersion",
+          "fxAc:AuthorUri",
+          "fxAc:Capabilities",
+          "fxAc:Capabilities.fxAc:FeedbackSignalRequired",
+          "fxAc:ConfigurationData",
+          "fxAc:ConfigurationData.di:UIElement",
+          "fxAc:ConfigurationData.fxAc:ClearStoredVariables",
+          "fxAc:ConfigurationData.fxAc:ListStoredVariables",
+          "fxAc:ConfigurationData.fxAc:SetStoredVariables",
+          "fxAc:ConnectionEndpoints",
+          "fxAc:ConnectionEndpoints.fxAc:CommHealth",
+          "fxAc:ControlGroups",
+          "fxAc:InputData",
+          "fxAc:InputData.fxAc:SubscriberCapabilities",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedQos",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:OperationalHealth",
+          "fxAc:OperationalHealthAlarms",
+          "fxAc:OutputData",
+          "fxAc:OutputData.fxAc:PublisherCapabilities",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:SupportedQos",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:PublisherCapabilities",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:PublisherCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:PublisherCapabilities.fxAc:SupportedQos",
+          "fxAc:PublisherCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:SubscriberCapabilities",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedQos",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:Verify"
+        ]
+      },
+      "AcDescriptorType": {
+        "browseName": "AcDescriptorType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.3",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:DescriptorFile",
+            "nodeClass": "Object",
+            "typeDefinition": "FileType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:DescriptorIdentifier",
+            "nodeClass": "Property",
+            "dataType": "UriString",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:DescriptorVersion",
+            "nodeClass": "Property",
+            "dataType": "FxVersion",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:DescriptorFile",
+          "fxAc:DescriptorFile.LastModifiedTime",
+          "fxAc:DescriptorFile.MaxByteStringLength",
+          "fxAc:DescriptorFile.MimeType",
+          "fxAc:DescriptorIdentifier",
+          "fxAc:DescriptorVersion"
+        ]
+      },
+      "AssetConnectorType": {
+        "browseName": "AssetConnectorType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "description": "AssetConnectorType provides information about physical connections that are part of an asset",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.4",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxAc:Id",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:Id",
+          "fxAc:Name"
+        ]
+      },
+      "ClampBlockType": {
+        "browseName": "ClampBlockType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "ClampBlockType represents a wire connection block",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.8",
+        "subtypeOf": "fxAc:AssetConnectorType",
+        "components": [
+          {
+            "browseName": "fxAc:<Clamp>",
+            "nodeClass": "Object",
+            "typeDefinition": "ClampType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxAc:Kind",
+            "nodeClass": "Variable",
+            "dataType": "UInt16",
+            "typeDefinition": "MultiStateValueDiscreteType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:BlockSize",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Id",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:BlockSize",
+          "fxAc:Id",
+          "fxAc:Kind",
+          "fxAc:Kind.Definition",
+          "fxAc:Kind.ValuePrecision"
+        ]
+      },
+      "ClampType": {
+        "browseName": "ClampType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "ClampType represents a wire connection",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.7",
+        "subtypeOf": "fxAc:AssetConnectorType",
+        "components": [
+          {
+            "browseName": "fxAc:Kind",
+            "nodeClass": "Variable",
+            "dataType": "UInt16",
+            "typeDefinition": "MultiStateValueDiscreteType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Id",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:Id",
+          "fxAc:Kind",
+          "fxAc:Kind.Definition",
+          "fxAc:Kind.ValuePrecision"
+        ]
+      },
+      "SlotType": {
+        "browseName": "SlotType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "SlotType represents a physical slot where a module can attach",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.5",
+        "subtypeOf": "fxAc:AssetConnectorType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxAc:Id",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:LogicalId",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:LogicalId",
+          "fxAc:Name"
+        ]
+      },
+      "SocketType": {
+        "browseName": "SocketType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "description": "SocketType represents a physical socket where a cable can be connected",
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.6",
+        "subtypeOf": "fxAc:AssetConnectorType",
+        "components": [
+          {
+            "browseName": "fxAc:Kind",
+            "nodeClass": "Variable",
+            "dataType": "UInt16",
+            "typeDefinition": "MultiStateValueDiscreteType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Id",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:Id",
+          "fxAc:Kind",
+          "fxAc:Kind.Definition",
+          "fxAc:Kind.ValuePrecision"
+        ]
+      },
+      "AutomationComponentType": {
+        "browseName": "AutomationComponentType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:AggregatedHealth",
+            "nodeClass": "Variable",
+            "dataType": "AggregatedHealthDataType",
+            "typeDefinition": "AggregatedHealthType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Assets",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:AutomationComponentLog",
+            "nodeClass": "Object",
+            "typeDefinition": "LogObjectType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ComponentCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "AutomationComponentCapabilitiesType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Descriptors",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:FunctionalEntities",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:PublisherCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "PublisherCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SubscriberCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "SubscriberCapabilitiesType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:ConformanceName",
+            "nodeClass": "Property",
+            "dataType": "UriString",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [
+          "fxAc:CloseConnections",
+          "fxAc:EstablishConnections"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CloseCallCount",
+          "di:Diagnostics.fxAc:CloseCallFailedCount",
+          "di:Diagnostics.fxAc:EstablishCallCount",
+          "di:Diagnostics.fxAc:EstablishCallFailedCount",
+          "fxAc:AutomationComponentLog",
+          "fxAc:AutomationComponentLog.MaxRecords",
+          "fxAc:AutomationComponentLog.MaxStorageDuration",
+          "fxAc:AutomationComponentLog.MinimumSeverity",
+          "fxAc:AutomationComponentLog.ReleaseContinuationPoint",
+          "fxAc:ComponentCapabilities.fxAc:CommandBundleRequired",
+          "fxAc:ComponentCapabilities.fxAc:MaxConnections",
+          "fxAc:ComponentCapabilities.fxAc:MaxConnectionsPerCall",
+          "fxAc:ComponentCapabilities.fxAc:MaxFunctionalEntities",
+          "fxAc:ComponentCapabilities.fxAc:MinConnections",
+          "fxAc:ComponentCapabilities.fxAc:SupportsPersistence",
+          "fxAc:ConformanceName",
+          "fxAc:PublisherCapabilities",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:PublisherCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:PublisherCapabilities.fxAc:SupportedQos",
+          "fxAc:PublisherCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:SubscriberCapabilities",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedQos",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedTransportProtocolMappings"
+        ]
+      },
+      "ConnectionEndpointType": {
+        "browseName": "ConnectionEndpointType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.6.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:CleanupTimeout",
+            "nodeClass": "Variable",
+            "dataType": "Duration",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:ConnectionManagerApplicationUri",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:InputVariables",
+            "nodeClass": "Variable",
+            "dataType": "NodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:IsPersistent",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:OutputVariables",
+            "nodeClass": "Variable",
+            "dataType": "NodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:RelatedEndpoint",
+            "nodeClass": "Variable",
+            "dataType": "RelatedEndpointDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Status",
+            "nodeClass": "Variable",
+            "dataType": "ConnectionEndpointStatusEnum",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CreationTime",
+          "di:Diagnostics.fxAc:ModificationTime",
+          "fxAc:ConnectionManagerApplicationUri",
+          "fxAc:InputVariables",
+          "fxAc:OutputVariables"
+        ]
+      },
+      "PubSubConnectionEndpointType": {
+        "browseName": "PubSubConnectionEndpointType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.6.3",
+        "subtypeOf": "fxAc:ConnectionEndpointType",
+        "components": [
+          {
+            "browseName": "fxAc:DataSetReaderPath",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:DataSetWriterPath",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:Mode",
+            "nodeClass": "Variable",
+            "dataType": "PubSubConnectionEndpointModeEnum",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:CleanupTimeout",
+            "nodeClass": "Variable",
+            "dataType": "Duration",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:ConnectionManagerApplicationUri",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:InputVariables",
+            "nodeClass": "Variable",
+            "dataType": "NodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:IsPersistent",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:OutputVariables",
+            "nodeClass": "Variable",
+            "dataType": "NodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:RelatedEndpoint",
+            "nodeClass": "Variable",
+            "dataType": "RelatedEndpointDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:Status",
+            "nodeClass": "Variable",
+            "dataType": "ConnectionEndpointStatusEnum",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CreationTime",
+          "di:Diagnostics.fxAc:ModificationTime",
+          "fxAc:ConnectionManagerApplicationUri",
+          "fxAc:DataSetReaderPath",
+          "fxAc:DataSetWriterPath",
+          "fxAc:InputVariables",
+          "fxAc:OutputVariables"
+        ]
+      },
+      "ControlGroupType": {
+        "browseName": "ControlGroupType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.5.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:ListOfRelated",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:ListToBlock",
+            "nodeClass": "Object",
+            "typeDefinition": "ControlItemFolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:ListToRestrict",
+            "nodeClass": "Object",
+            "typeDefinition": "ControlItemFolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:<ControlGroup>",
+            "nodeClass": "Object",
+            "typeDefinition": "ControlGroupType",
+            "modellingRule": "OptionalPlaceholder"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:IsControlled",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "methods": [
+          "fxAc:EstablishControl",
+          "fxAc:ReassignControl",
+          "fxAc:ReleaseControl"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:EstablishControl",
+          "fxAc:ListToBlock.di:MaxInactiveLockTime",
+          "fxAc:ListToBlock.di:UIElement",
+          "fxAc:ListToRestrict.di:MaxInactiveLockTime",
+          "fxAc:ListToRestrict.di:UIElement",
+          "fxAc:ReassignControl",
+          "fxAc:ReleaseControl"
+        ]
+      },
+      "FunctionalEntityType": {
+        "browseName": "FunctionalEntityType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.4.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:Capabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalEntityCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ConfigurationData",
+            "nodeClass": "Object",
+            "typeDefinition": "ConfigurationDataFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ConnectionEndpoints",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionEndpointsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:ControlGroups",
+            "nodeClass": "Object",
+            "typeDefinition": "ControlGroupsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:InputData",
+            "nodeClass": "Object",
+            "typeDefinition": "InputsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Operational",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:OperationalHealth",
+            "nodeClass": "Variable",
+            "dataType": "OperationalHealthOptionSet",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:OperationalHealthAlarms",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:OutputData",
+            "nodeClass": "Object",
+            "typeDefinition": "OutputsFolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:PublisherCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "PublisherCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Status",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SubscriberCapabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "SubscriberCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:<SubFunctionalEntity>",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalEntityType",
+            "modellingRule": "OptionalPlaceholder"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxAc:ApplicationIdentifier",
+            "nodeClass": "Property",
+            "dataType": "ApplicationIdentifierDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:AuthorAssignedIdentifier",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:AuthorAssignedVersion",
+            "nodeClass": "Property",
+            "dataType": "FxVersion",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:AuthorUri",
+            "nodeClass": "Property",
+            "dataType": "UriString",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [
+          "fxAc:Verify"
+        ],
+        "interfaces": [
+          "fxAc:IFunctionalEntityType"
+        ],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CleanedUpConnectionCount",
+          "di:Diagnostics.fxAc:ErrorConnectionCount",
+          "di:Diagnostics.fxAc:ExistingConnectionCount",
+          "di:Diagnostics.fxAc:FailedConnectionCount",
+          "di:Diagnostics.fxAc:FailedEstablishAttemptsCount",
+          "di:Diagnostics.fxAc:FailedVerificationCount",
+          "di:Diagnostics.fxAc:OperationalConnectionCount",
+          "di:Diagnostics.fxAc:TotalEstablishAttemptsCount",
+          "di:Operational",
+          "di:Operational.di:UIElement",
+          "di:Status",
+          "di:Status.di:UIElement",
+          "fxAc:ApplicationIdentifier",
+          "fxAc:AuthorAssignedIdentifier",
+          "fxAc:AuthorAssignedVersion",
+          "fxAc:AuthorUri",
+          "fxAc:Capabilities",
+          "fxAc:Capabilities.fxAc:FeedbackSignalRequired",
+          "fxAc:ConfigurationData",
+          "fxAc:ConfigurationData.di:UIElement",
+          "fxAc:ConfigurationData.fxAc:ClearStoredVariables",
+          "fxAc:ConfigurationData.fxAc:ListStoredVariables",
+          "fxAc:ConfigurationData.fxAc:SetStoredVariables",
+          "fxAc:ConnectionEndpoints",
+          "fxAc:ConnectionEndpoints.fxAc:CommHealth",
+          "fxAc:ControlGroups",
+          "fxAc:InputData",
+          "fxAc:InputData.fxAc:SubscriberCapabilities",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedQos",
+          "fxAc:InputData.fxAc:SubscriberCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:OperationalHealth",
+          "fxAc:OperationalHealthAlarms",
+          "fxAc:OutputData",
+          "fxAc:OutputData.fxAc:PublisherCapabilities",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:SupportedQos",
+          "fxAc:OutputData.fxAc:PublisherCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:PublisherCapabilities",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:PublisherCapabilities.fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:PublisherCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:PublisherCapabilities.fxAc:SupportedQos",
+          "fxAc:PublisherCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:SubscriberCapabilities",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredDataSetOnly",
+          "fxAc:SubscriberCapabilities.fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedPublishingIntervals",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedQos",
+          "fxAc:SubscriberCapabilities.fxAc:SupportedTransportProtocolMappings",
+          "fxAc:Verify"
+        ]
+      },
+      "FxAssetType": {
+        "browseName": "FxAssetType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.3.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:Connectors",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:DeviceHealth",
+            "nodeClass": "Variable",
+            "dataType": "DeviceHealthEnumeration",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:DeviceHealthAlarms",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:SoftwareUpdate",
+            "nodeClass": "Object",
+            "typeDefinition": "SoftwareUpdateType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "di:AssetId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:BuildAssetNumber",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:ComponentName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:DeviceClass",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:DeviceManual",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:DeviceRevision",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:HardwareRevision",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MajorAssetVersion",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Manufacturer",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:ManufacturerUri",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:MinorAssetVersion",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Model",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:ProductCode",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:ProductInstanceUri",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:RevisionCounter",
+            "nodeClass": "Property",
+            "dataType": "Int32",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:SerialNumber",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:SoftwareRevision",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SubBuildAssetNumber",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [
+          "fxAc:VerifyAsset"
+        ],
+        "interfaces": [
+          "fxAc:IAssetExtensionsType",
+          "fxAc:IAssetRevisionType",
+          "di:IDeviceHealthType",
+          "di:ITagNameplateType",
+          "di:IVendorNameplateType"
+        ],
+        "availableOptionals": [
+          "di:AssetId",
+          "di:ComponentName",
+          "di:DeviceClass",
+          "di:DeviceHealth",
+          "di:DeviceHealthAlarms",
+          "di:DeviceManual",
+          "di:DeviceRevision",
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxAc:CurrentCPUUtilization",
+          "di:Diagnostics.fxAc:CurrentMemoryUtilization",
+          "di:Diagnostics.fxAc:MaxCPUUtilization",
+          "di:Diagnostics.fxAc:MaxMemoryUtilization",
+          "di:Diagnostics.fxAc:UpTime",
+          "di:HardwareRevision",
+          "di:Manufacturer",
+          "di:ManufacturerUri",
+          "di:Model",
+          "di:PatchIdentifiers",
+          "di:ProductCode",
+          "di:ProductInstanceUri",
+          "di:RevisionCounter",
+          "di:SerialNumber",
+          "di:SoftwareReleaseDate",
+          "di:SoftwareRevision",
+          "di:SoftwareUpdate",
+          "di:SoftwareUpdate.di:Confirmation",
+          "di:SoftwareUpdate.di:Confirmation.AvailableStates",
+          "di:SoftwareUpdate.di:Confirmation.AvailableTransitions",
+          "di:SoftwareUpdate.di:Confirmation.CurrentState.EffectiveDisplayName",
+          "di:SoftwareUpdate.di:Confirmation.CurrentState.Name",
+          "di:SoftwareUpdate.di:Confirmation.CurrentState.Number",
+          "di:SoftwareUpdate.di:Confirmation.LastTransition",
+          "di:SoftwareUpdate.di:Confirmation.LastTransition.EffectiveTransitionTime",
+          "di:SoftwareUpdate.di:Confirmation.LastTransition.Name",
+          "di:SoftwareUpdate.di:Confirmation.LastTransition.Number",
+          "di:SoftwareUpdate.di:Confirmation.LastTransition.TransitionTime",
+          "di:SoftwareUpdate.di:Installation",
+          "di:SoftwareUpdate.di:Installation.AvailableStates",
+          "di:SoftwareUpdate.di:Installation.AvailableTransitions",
+          "di:SoftwareUpdate.di:Installation.CurrentState.EffectiveDisplayName",
+          "di:SoftwareUpdate.di:Installation.CurrentState.Name",
+          "di:SoftwareUpdate.di:Installation.CurrentState.Number",
+          "di:SoftwareUpdate.di:Installation.LastTransition",
+          "di:SoftwareUpdate.di:Installation.LastTransition.EffectiveTransitionTime",
+          "di:SoftwareUpdate.di:Installation.LastTransition.Name",
+          "di:SoftwareUpdate.di:Installation.LastTransition.Number",
+          "di:SoftwareUpdate.di:Installation.LastTransition.TransitionTime",
+          "di:SoftwareUpdate.di:Installation.di:InstallFiles",
+          "di:SoftwareUpdate.di:Installation.di:InstallSoftwarePackage",
+          "di:SoftwareUpdate.di:Installation.di:InstallationDelay",
+          "di:SoftwareUpdate.di:Installation.di:PercentComplete",
+          "di:SoftwareUpdate.di:Installation.di:Uninstall",
+          "di:SoftwareUpdate.di:Loading",
+          "di:SoftwareUpdate.di:Loading.di:UpdateKey",
+          "di:SoftwareUpdate.di:Parameters",
+          "di:SoftwareUpdate.di:PowerCycle",
+          "di:SoftwareUpdate.di:PowerCycle.AvailableStates",
+          "di:SoftwareUpdate.di:PowerCycle.AvailableTransitions",
+          "di:SoftwareUpdate.di:PowerCycle.CurrentState.EffectiveDisplayName",
+          "di:SoftwareUpdate.di:PowerCycle.CurrentState.Name",
+          "di:SoftwareUpdate.di:PowerCycle.CurrentState.Number",
+          "di:SoftwareUpdate.di:PowerCycle.LastTransition",
+          "di:SoftwareUpdate.di:PowerCycle.LastTransition.EffectiveTransitionTime",
+          "di:SoftwareUpdate.di:PowerCycle.LastTransition.Name",
+          "di:SoftwareUpdate.di:PowerCycle.LastTransition.Number",
+          "di:SoftwareUpdate.di:PowerCycle.LastTransition.TransitionTime",
+          "di:SoftwareUpdate.di:PrepareForUpdate",
+          "di:SoftwareUpdate.di:PrepareForUpdate.AvailableStates",
+          "di:SoftwareUpdate.di:PrepareForUpdate.AvailableTransitions",
+          "di:SoftwareUpdate.di:PrepareForUpdate.CurrentState.EffectiveDisplayName",
+          "di:SoftwareUpdate.di:PrepareForUpdate.CurrentState.Name",
+          "di:SoftwareUpdate.di:PrepareForUpdate.CurrentState.Number",
+          "di:SoftwareUpdate.di:PrepareForUpdate.LastTransition",
+          "di:SoftwareUpdate.di:PrepareForUpdate.LastTransition.EffectiveTransitionTime",
+          "di:SoftwareUpdate.di:PrepareForUpdate.LastTransition.Name",
+          "di:SoftwareUpdate.di:PrepareForUpdate.LastTransition.Number",
+          "di:SoftwareUpdate.di:PrepareForUpdate.LastTransition.TransitionTime",
+          "di:SoftwareUpdate.di:PrepareForUpdate.di:PercentComplete",
+          "di:SoftwareUpdate.di:PrepareForUpdate.di:Resume",
+          "di:SoftwareUpdate.di:SoftwareClass",
+          "di:SoftwareUpdate.di:SoftwareName",
+          "di:SoftwareUpdate.di:SoftwareSubclass",
+          "di:SoftwareUpdate.di:UnsignedPackageAllowed",
+          "di:SoftwareUpdate.di:UpdateStatus",
+          "di:SoftwareUpdate.di:VendorErrorCode",
+          "fxAc:BuildAssetNumber",
+          "fxAc:Connectors",
+          "fxAc:MajorAssetVersion",
+          "fxAc:MinorAssetVersion",
+          "fxAc:SubBuildAssetNumber",
+          "fxAc:VerifyAsset"
+        ]
+      },
+      "PublisherCapabilitiesType": {
+        "browseName": "PublisherCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.7",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:PreconfiguredDataSetOnly",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:PreconfiguredPublishedDataSets",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedPublishingIntervals",
+            "nodeClass": "Variable",
+            "dataType": "IntervalRange",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedQos",
+            "nodeClass": "Variable",
+            "dataType": "PublisherQosDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedTransportProtocolMappings",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:PreconfiguredDataSetOnly",
+          "fxAc:PreconfiguredPublishedDataSets",
+          "fxAc:SupportedPublishingIntervals",
+          "fxAc:SupportedQos",
+          "fxAc:SupportedTransportProtocolMappings"
+        ]
+      },
+      "SubscriberCapabilitiesType": {
+        "browseName": "SubscriberCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/6.2.8",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxAc:PreconfiguredDataSetOnly",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:PreconfiguredSubscribedDataSets",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedMessageReceiveTimeouts",
+            "nodeClass": "Variable",
+            "dataType": "IntervalRange",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedPublishingIntervals",
+            "nodeClass": "Variable",
+            "dataType": "IntervalRange",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedQos",
+            "nodeClass": "Variable",
+            "dataType": "SubscriberQosDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxAc:SupportedTransportProtocolMappings",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxAc:PreconfiguredDataSetOnly",
+          "fxAc:PreconfiguredSubscribedDataSets",
+          "fxAc:SupportedMessageReceiveTimeouts",
+          "fxAc:SupportedPublishingIntervals",
+          "fxAc:SupportedQos",
+          "fxAc:SupportedTransportProtocolMappings"
+        ]
+      },
+      "AggregatedHealthType": {
+        "browseName": "AggregatedHealthType",
+        "kind": "VariableType",
+        "namespace": "fxAc",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/specs/OPC-10000-81/9.1.2",
+        "subtypeOf": "ua:BaseDataVariableType",
+        "components": [
+          {
+            "browseName": "fxAc:AggregatedDeviceHealth",
+            "nodeClass": "Variable",
+            "dataType": "DeviceHealthOptionSet",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxAc:AggregatedOperationalHealth",
+            "nodeClass": "Variable",
+            "dataType": "OperationalHealthOptionSet",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": []
+      }
+    },
+    "fxCm": {
+      "ConnectionManagerCapabilitiesType": {
+        "browseName": "ConnectionManagerCapabilitiesType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "subtypeOf": "ua:FolderType",
+        "components": [
+          {
+            "browseName": "fxCm:<Capability>",
+            "nodeClass": "Variable",
+            "dataType": "BaseDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxCm:MaxConnectionConfigurationSets",
+            "nodeClass": "Variable",
+            "dataType": "UInt32",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:MonitorsAllConnectionEndpoints",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:MonitorsLocalConnectionEndpoints",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:MaxConnectionConfigurationSets",
+          "fxCm:MonitorsAllConnectionEndpoints",
+          "fxCm:MonitorsLocalConnectionEndpoints"
+        ]
+      },
+      "ConnectionManagerConfigurationType": {
+        "browseName": "ConnectionManagerConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "subtypeOf": "ua:FileType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "ua:Size",
+            "nodeClass": "Property",
+            "dataType": "UInt64",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Writable",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:UserWritable",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:OpenCount",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:MimeType",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:MaxByteStringLength",
+            "nodeClass": "Property",
+            "dataType": "UInt32",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:LastModifiedTime",
+            "nodeClass": "Property",
+            "dataType": "DateTime",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [
+          "fxCm:CloseAndUpdate",
+          "ua:Open",
+          "ua:Close",
+          "ua:Read",
+          "ua:Write",
+          "ua:GetPosition",
+          "ua:SetPosition"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "LastModifiedTime",
+          "MaxByteStringLength",
+          "MimeType"
+        ]
+      },
+      "AuditUpdateConnectionConfigurationSetEventType": {
+        "browseName": "AuditUpdateConnectionConfigurationSetEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "subtypeOf": "ua:AuditWriteUpdateEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxCm:ConnectionConfigurationSetNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:AttributeId",
+            "nodeClass": "Property",
+            "dataType": "UInt32",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:IndexRange",
+            "nodeClass": "Property",
+            "dataType": "NumericRange",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:OldValue",
+            "nodeClass": "Property",
+            "dataType": "BaseDataType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:NewValue",
+            "nodeClass": "Property",
+            "dataType": "BaseDataType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ActionTimeStamp",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Status",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ServerId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientAuditEntryId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientUserId",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ClientApplicationUri",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ClientApplicationUri",
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "CloseConnectionErrorEventType": {
+        "browseName": "CloseConnectionErrorEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "subtypeOf": "ua:BaseLogEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ErrorCode",
+            "nodeClass": "Property",
+            "dataType": "StatusCode",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ErrorCodeNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:TraceContext",
+            "nodeClass": "Property",
+            "dataType": "TraceContextDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "ErrorCode",
+          "ErrorCodeNode",
+          "LocalTime",
+          "TraceContext"
+        ]
+      },
+      "EstablishConnectionErrorEventType": {
+        "browseName": "EstablishConnectionErrorEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "subtypeOf": "ua:BaseLogEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ErrorCode",
+            "nodeClass": "Property",
+            "dataType": "StatusCode",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ErrorCodeNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:TraceContext",
+            "nodeClass": "Property",
+            "dataType": "TraceContextDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "ErrorCode",
+          "ErrorCodeNode",
+          "LocalTime",
+          "TraceContext"
+        ]
+      },
+      "ConnectionConfigurationSetEventType": {
+        "browseName": "ConnectionConfigurationSetEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.5",
+        "subtypeOf": "ua:BaseEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxCm:Action",
+            "nodeClass": "Property",
+            "dataType": "FxProcessEnum",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConnectionConfigurationSetNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "ConnectionConfigurationSetProcessingFailedEventType": {
+        "browseName": "ConnectionConfigurationSetProcessingFailedEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.8",
+        "subtypeOf": "fxCm:ConnectionConfigurationSetEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxCm:Action",
+            "nodeClass": "Property",
+            "dataType": "FxProcessEnum",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConnectionConfigurationSetNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "ConnectionConfigurationSetProcessingStartedEventType": {
+        "browseName": "ConnectionConfigurationSetProcessingStartedEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.6",
+        "subtypeOf": "fxCm:ConnectionConfigurationSetEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxCm:Action",
+            "nodeClass": "Property",
+            "dataType": "FxProcessEnum",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConnectionConfigurationSetNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "ConnectionConfigurationSetProcessingSucceededEventType": {
+        "browseName": "ConnectionConfigurationSetProcessingSucceededEventType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/8.7",
+        "subtypeOf": "fxCm:ConnectionConfigurationSetEventType",
+        "components": [],
+        "properties": [
+          {
+            "browseName": "fxCm:Action",
+            "nodeClass": "Property",
+            "dataType": "FxProcessEnum",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConnectionConfigurationSetNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Name",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventId",
+            "nodeClass": "Property",
+            "dataType": "ByteString",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:EventType",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceNode",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:SourceName",
+            "nodeClass": "Property",
+            "dataType": "String",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Time",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ReceiveTime",
+            "nodeClass": "Property",
+            "dataType": "UtcTime",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:LocalTime",
+            "nodeClass": "Property",
+            "dataType": "TimeZoneDataType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:Message",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:Severity",
+            "nodeClass": "Property",
+            "dataType": "UInt16",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:ConditionClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassId",
+            "nodeClass": "Property",
+            "dataType": "NodeId",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:ConditionSubClassName",
+            "nodeClass": "Property",
+            "dataType": "LocalizedText",
+            "modellingRule": "Optional"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "ConditionClassId",
+          "ConditionClassName",
+          "ConditionSubClassId",
+          "ConditionSubClassName",
+          "LocalTime"
+        ]
+      },
+      "ConnectionConfigurationSetStateMachineType": {
+        "browseName": "ConnectionConfigurationSetStateMachineType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.9.2",
+        "subtypeOf": "ua:FiniteStateMachineType",
+        "components": [
+          {
+            "browseName": "fxCm:Error",
+            "nodeClass": "Object",
+            "typeDefinition": "StateType"
+          },
+          {
+            "browseName": "fxCm:ErrorToProcessing",
+            "nodeClass": "Object",
+            "typeDefinition": "TransitionType"
+          },
+          {
+            "browseName": "ua:LastTransition",
+            "nodeClass": "Variable",
+            "dataType": "LocalizedText",
+            "typeDefinition": "FiniteTransitionVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Processing",
+            "nodeClass": "Object",
+            "typeDefinition": "StateType"
+          },
+          {
+            "browseName": "fxCm:ProcessingToError",
+            "nodeClass": "Object",
+            "typeDefinition": "TransitionType"
+          },
+          {
+            "browseName": "fxCm:ProcessingToReady",
+            "nodeClass": "Object",
+            "typeDefinition": "TransitionType"
+          },
+          {
+            "browseName": "fxCm:Ready",
+            "nodeClass": "Object",
+            "typeDefinition": "StateType"
+          },
+          {
+            "browseName": "fxCm:ReadyToProcessing",
+            "nodeClass": "Object",
+            "typeDefinition": "TransitionType"
+          },
+          {
+            "browseName": "ua:CurrentState",
+            "nodeClass": "Variable",
+            "dataType": "LocalizedText",
+            "typeDefinition": "FiniteStateVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "ua:AvailableStates",
+            "nodeClass": "Variable",
+            "dataType": "NodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "ua:AvailableTransitions",
+            "nodeClass": "Variable",
+            "dataType": "NodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "AvailableStates",
+          "AvailableTransitions",
+          "CurrentState.EffectiveDisplayName",
+          "CurrentState.Name",
+          "CurrentState.Number",
+          "LastTransition.EffectiveTransitionTime",
+          "LastTransition.Name",
+          "LastTransition.Number",
+          "LastTransition.TransitionTime"
+        ]
+      },
+      "AssetVerificationType": {
+        "browseName": "AssetVerificationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.15.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:AssetToVerify",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifier",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ExpectedAdditionalVerificationVariables",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifierValuePair",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ExpectedVerificationResult",
+            "nodeClass": "Variable",
+            "dataType": "AssetVerificationResultEnum",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ExpectedVerificationVariables",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifierValuePair",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:VerificationMode",
+            "nodeClass": "Variable",
+            "dataType": "AssetVerificationModeEnum",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:AssetToVerify.RestrictToList",
+          "fxCm:AssetToVerify.SelectionDescriptions"
+        ]
+      },
+      "AutomationComponentConfigurationType": {
+        "browseName": "AutomationComponentConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.14.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:<AssetVerification>",
+            "nodeClass": "Object",
+            "typeDefinition": "AssetVerificationType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxCm:AutomationComponentNode",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifier",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:CommandBundleRequired",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:CommunicationModelConfig",
+            "nodeClass": "Object",
+            "typeDefinition": "CommunicationModelConfigurationType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:AutomationComponentNode.RestrictToList",
+          "fxCm:AutomationComponentNode.SelectionDescriptions",
+          "fxCm:CommunicationModelConfig"
+        ]
+      },
+      "CommunicationFlowConfigurationType": {
+        "browseName": "CommunicationFlowConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.13.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": []
+      },
+      "PubSubCommunicationFlowConfigurationType": {
+        "browseName": "PubSubCommunicationFlowConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.13.3/#6.13.3.2",
+        "subtypeOf": "fxCm:CommunicationFlowConfigurationType",
+        "components": [
+          {
+            "browseName": "fxCm:<SubscriberConfiguration>",
+            "nodeClass": "Object",
+            "typeDefinition": "SubscriberConfigurationType",
+            "modellingRule": "OptionalPlaceholder"
+          },
+          {
+            "browseName": "fxCm:Address",
+            "nodeClass": "Variable",
+            "dataType": "NetworkAddressDataType",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:HeaderLayoutUri",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:PublishingInterval",
+            "nodeClass": "Variable",
+            "dataType": "Duration",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:Qos",
+            "nodeClass": "Variable",
+            "dataType": "CommunicationFlowQosDataType",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:SecurityGroupId",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:SecurityMode",
+            "nodeClass": "Variable",
+            "dataType": "MessageSecurityMode",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:TransportProfileUri",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:Address",
+          "fxCm:Address.RestrictToList",
+          "fxCm:Address.SelectionDescriptions",
+          "fxCm:HeaderLayoutUri",
+          "fxCm:HeaderLayoutUri.RestrictToList",
+          "fxCm:HeaderLayoutUri.SelectionDescriptions",
+          "fxCm:PublishingInterval",
+          "fxCm:PublishingInterval.RestrictToList",
+          "fxCm:PublishingInterval.SelectionDescriptions",
+          "fxCm:PublishingInterval.fxCm:AvailableRanges",
+          "fxCm:Qos",
+          "fxCm:Qos.RestrictToList",
+          "fxCm:Qos.SelectionDescriptions",
+          "fxCm:SecurityGroupId",
+          "fxCm:SecurityGroupId.RestrictToList",
+          "fxCm:SecurityGroupId.SelectionDescriptions",
+          "fxCm:SecurityMode",
+          "fxCm:SecurityMode.RestrictToList",
+          "fxCm:SecurityMode.SelectionDescriptions",
+          "fxCm:TransportProfileUri",
+          "fxCm:TransportProfileUri.RestrictToList",
+          "fxCm:TransportProfileUri.SelectionDescriptions"
+        ]
+      },
+      "CommunicationModelConfigurationType": {
+        "browseName": "CommunicationModelConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": true,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.16.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": []
+      },
+      "PubSubCommunicationModelConfigurationType": {
+        "browseName": "PubSubCommunicationModelConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.16.3/#6.16.3.2",
+        "subtypeOf": "fxCm:CommunicationModelConfigurationType",
+        "components": [
+          {
+            "browseName": "fxCm:ConfigurationReferences",
+            "nodeClass": "Variable",
+            "dataType": "PubSubConfigurationRefDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConfigurationValues",
+            "nodeClass": "Variable",
+            "dataType": "PubSubConfigurationValueDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Namespaces",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:PubSubConfiguration",
+            "nodeClass": "Variable",
+            "dataType": "PubSubConfiguration2DataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:TranslationTable",
+            "nodeClass": "Variable",
+            "dataType": "NodeIdTranslationDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": []
+      },
+      "ConnectionConfigurationSetType": {
+        "browseName": "ConnectionConfigurationSetType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.8.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:<AutomationComponentConfiguration>",
+            "nodeClass": "Object",
+            "typeDefinition": "AutomationComponentConfigurationType",
+            "modellingRule": "MandatoryPlaceholder"
+          },
+          {
+            "browseName": "fxCm:<CommunicationFlow>",
+            "nodeClass": "Object",
+            "typeDefinition": "CommunicationFlowConfigurationType",
+            "modellingRule": "MandatoryPlaceholder"
+          },
+          {
+            "browseName": "fxCm:<Connection>",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionConfigurationType",
+            "modellingRule": "MandatoryPlaceholder"
+          },
+          {
+            "browseName": "fxCm:<ServerAddress>",
+            "nodeClass": "Variable",
+            "dataType": "ServerAddressDataType",
+            "typeDefinition": "ServerAddressType",
+            "modellingRule": "MandatoryPlaceholder"
+          },
+          {
+            "browseName": "fxCm:ConnectionConfigurationSetStateMachine",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionConfigurationSetStateMachineType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConnectionsDiagnostics",
+            "nodeClass": "Variable",
+            "dataType": "ConnectionDiagnosticsDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Lock",
+            "nodeClass": "Object",
+            "typeDefinition": "LockingServicesType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:PubSubKeyPushTargets",
+            "nodeClass": "Variable",
+            "dataType": "PubSubKeyPushTargetDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:SecurityGroups",
+            "nodeClass": "Variable",
+            "dataType": "SecurityGroupDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:SecurityKeyServer",
+            "nodeClass": "Variable",
+            "dataType": "SecurityKeyServerAddressDataType",
+            "typeDefinition": "SecurityKeyServerAddressType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:Version",
+            "nodeClass": "Variable",
+            "dataType": "UInt32",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [
+          {
+            "browseName": "fxCm:Edit",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:RollbackOnError",
+            "nodeClass": "Property",
+            "dataType": "Boolean",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:ConnectionConfigurationSetStateMachine.AvailableStates",
+          "fxCm:ConnectionConfigurationSetStateMachine.AvailableTransitions",
+          "fxCm:ConnectionConfigurationSetStateMachine.CurrentState.EffectiveDisplayName",
+          "fxCm:ConnectionConfigurationSetStateMachine.CurrentState.Name",
+          "fxCm:ConnectionConfigurationSetStateMachine.CurrentState.Number",
+          "fxCm:ConnectionConfigurationSetStateMachine.LastTransition.EffectiveTransitionTime",
+          "fxCm:ConnectionConfigurationSetStateMachine.LastTransition.Name",
+          "fxCm:ConnectionConfigurationSetStateMachine.LastTransition.Number",
+          "fxCm:ConnectionConfigurationSetStateMachine.LastTransition.TransitionTime",
+          "fxCm:ConnectionsDiagnostics",
+          "fxCm:Edit",
+          "fxCm:PubSubKeyPushTargets",
+          "fxCm:SecurityGroups",
+          "fxCm:SecurityKeyServer",
+          "fxCm:SecurityKeyServer.fxCm:Address.RestrictToList",
+          "fxCm:SecurityKeyServer.fxCm:Address.SelectionDescriptions",
+          "fxCm:SecurityKeyServer.fxCm:SecurityPolicyUri.RestrictToList",
+          "fxCm:SecurityKeyServer.fxCm:SecurityPolicyUri.SelectionDescriptions",
+          "fxCm:SecurityKeyServer.fxCm:ServerUri.RestrictToList",
+          "fxCm:SecurityKeyServer.fxCm:ServerUri.SelectionDescriptions",
+          "fxCm:Version"
+        ]
+      },
+      "ConnectionConfigurationType": {
+        "browseName": "ConnectionConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.10.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:Endpoint1",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionEndpointConfigurationType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Endpoint2",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionEndpointConfigurationType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:Endpoint1.fxCm:ConfigurationData",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:CleanupTimeout.RestrictToList",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:CleanupTimeout.SelectionDescriptions",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:CommunicationLinks",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:InputVariableIds",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:IsPersistent.RestrictToList",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:IsPersistent.SelectionDescriptions",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:Name.RestrictToList",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:Name.SelectionDescriptions",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:OutputVariableIds",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:PreconfiguredPublishedDataSet",
+          "fxCm:Endpoint1.fxCm:ConnectionEndpoint.fxCm:PreconfiguredSubscribedDataSet",
+          "fxCm:Endpoint1.fxCm:ControlGroups",
+          "fxCm:Endpoint1.fxCm:ExpectedVerificationVariables",
+          "fxCm:Endpoint1.fxCm:FunctionalEntityNode.RestrictToList",
+          "fxCm:Endpoint1.fxCm:FunctionalEntityNode.SelectionDescriptions",
+          "fxCm:Endpoint2",
+          "fxCm:Endpoint2.fxCm:ConfigurationData",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:CleanupTimeout.RestrictToList",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:CleanupTimeout.SelectionDescriptions",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:CommunicationLinks",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:InputVariableIds",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:IsPersistent.RestrictToList",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:IsPersistent.SelectionDescriptions",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:Name.RestrictToList",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:Name.SelectionDescriptions",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:OutputVariableIds",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:PreconfiguredPublishedDataSet",
+          "fxCm:Endpoint2.fxCm:ConnectionEndpoint.fxCm:PreconfiguredSubscribedDataSet",
+          "fxCm:Endpoint2.fxCm:ControlGroups",
+          "fxCm:Endpoint2.fxCm:ExpectedVerificationVariables",
+          "fxCm:Endpoint2.fxCm:FunctionalEntityNode.RestrictToList",
+          "fxCm:Endpoint2.fxCm:FunctionalEntityNode.SelectionDescriptions"
+        ]
+      },
+      "ConnectionEndpointConfigurationType": {
+        "browseName": "ConnectionEndpointConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.11.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:ConfigurationData",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifierValuePair",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:ConnectionEndpoint",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionEndpointParameterType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ControlGroups",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifier",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:ExpectedVerificationVariables",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifierValuePair",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:FunctionalEntityNode",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifier",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:ConfigurationData",
+          "fxCm:ConnectionEndpoint.fxCm:CleanupTimeout.RestrictToList",
+          "fxCm:ConnectionEndpoint.fxCm:CleanupTimeout.SelectionDescriptions",
+          "fxCm:ConnectionEndpoint.fxCm:CommunicationLinks",
+          "fxCm:ConnectionEndpoint.fxCm:InputVariableIds",
+          "fxCm:ConnectionEndpoint.fxCm:IsPersistent.RestrictToList",
+          "fxCm:ConnectionEndpoint.fxCm:IsPersistent.SelectionDescriptions",
+          "fxCm:ConnectionEndpoint.fxCm:Name.RestrictToList",
+          "fxCm:ConnectionEndpoint.fxCm:Name.SelectionDescriptions",
+          "fxCm:ConnectionEndpoint.fxCm:OutputVariableIds",
+          "fxCm:ConnectionEndpoint.fxCm:PreconfiguredPublishedDataSet",
+          "fxCm:ConnectionEndpoint.fxCm:PreconfiguredSubscribedDataSet",
+          "fxCm:ControlGroups",
+          "fxCm:ExpectedVerificationVariables",
+          "fxCm:FunctionalEntityNode.RestrictToList",
+          "fxCm:FunctionalEntityNode.SelectionDescriptions"
+        ]
+      },
+      "ConnectionEndpointParameterType": {
+        "browseName": "ConnectionEndpointParameterType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.12.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:CleanupTimeout",
+            "nodeClass": "Variable",
+            "dataType": "Duration",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:CommunicationLinks",
+            "nodeClass": "Variable",
+            "dataType": "CommunicationLinkConfigurationDataType",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:ConnectionEndpointTypeId",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeId",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:InputVariableIds",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifier",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:IsPersistent",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:IsPreconfigured",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:Name",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:OutputVariableIds",
+            "nodeClass": "Variable",
+            "dataType": "PortableNodeIdentifier",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:PreconfiguredPublishedDataSet",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:PreconfiguredSubscribedDataSet",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:CleanupTimeout.RestrictToList",
+          "fxCm:CleanupTimeout.SelectionDescriptions",
+          "fxCm:CommunicationLinks",
+          "fxCm:InputVariableIds",
+          "fxCm:IsPersistent.RestrictToList",
+          "fxCm:IsPersistent.SelectionDescriptions",
+          "fxCm:Name.RestrictToList",
+          "fxCm:Name.SelectionDescriptions",
+          "fxCm:OutputVariableIds",
+          "fxCm:PreconfiguredPublishedDataSet",
+          "fxCm:PreconfiguredSubscribedDataSet"
+        ]
+      },
+      "ConnectionManagerType": {
+        "browseName": "ConnectionManagerType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.7.2",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:AggregatedCurrentState",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:Capabilities",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionManagerCapabilitiesType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:ConnectionConfigurationSets",
+            "nodeClass": "Object",
+            "typeDefinition": "FolderType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ConnectionManagerConfiguration",
+            "nodeClass": "Object",
+            "typeDefinition": "ConnectionManagerConfigurationType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:ConnectionManagerLog",
+            "nodeClass": "Object",
+            "typeDefinition": "LogObjectType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "di:Diagnostics",
+            "nodeClass": "Object",
+            "typeDefinition": "FunctionalGroupType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:GlobalDiscoveryServers",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [
+          "fxCm:EditConnectionConfigurationSets",
+          "fxCm:ProcessConnectionConfigurationSets"
+        ],
+        "interfaces": [],
+        "availableOptionals": [
+          "di:Diagnostics",
+          "di:Diagnostics.di:UIElement",
+          "di:Diagnostics.fxCm:CloseCallCount",
+          "di:Diagnostics.fxCm:CloseCallFailedCount",
+          "di:Diagnostics.fxCm:EstablishCallCount",
+          "di:Diagnostics.fxCm:EstablishCallFailedCount",
+          "fxCm:AggregatedCurrentState",
+          "fxCm:Capabilities",
+          "fxCm:Capabilities.fxCm:MaxConnectionConfigurationSets",
+          "fxCm:Capabilities.fxCm:MonitorsAllConnectionEndpoints",
+          "fxCm:Capabilities.fxCm:MonitorsLocalConnectionEndpoints",
+          "fxCm:ConnectionManagerConfiguration",
+          "fxCm:ConnectionManagerConfiguration.LastModifiedTime",
+          "fxCm:ConnectionManagerConfiguration.MaxByteStringLength",
+          "fxCm:ConnectionManagerConfiguration.MimeType",
+          "fxCm:ConnectionManagerLog",
+          "fxCm:ConnectionManagerLog.MaxRecords",
+          "fxCm:ConnectionManagerLog.MaxStorageDuration",
+          "fxCm:ConnectionManagerLog.MinimumSeverity",
+          "fxCm:ConnectionManagerLog.ReleaseContinuationPoint",
+          "fxCm:EditConnectionConfigurationSets",
+          "fxCm:GlobalDiscoveryServers",
+          "fxCm:ProcessConnectionConfigurationSets"
+        ]
+      },
+      "SubscriberConfigurationType": {
+        "browseName": "SubscriberConfigurationType",
+        "kind": "ObjectType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/6.13.3/#6.13.3.3",
+        "subtypeOf": "ua:BaseObjectType",
+        "components": [
+          {
+            "browseName": "fxCm:Address",
+            "nodeClass": "Variable",
+            "dataType": "NetworkAddressDataType",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          },
+          {
+            "browseName": "fxCm:MessageReceiveTimeout",
+            "nodeClass": "Variable",
+            "dataType": "Duration",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ReceiveQos",
+            "nodeClass": "Variable",
+            "dataType": "ReceiveQosDataType",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Optional"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:Address",
+          "fxCm:Address.RestrictToList",
+          "fxCm:Address.SelectionDescriptions",
+          "fxCm:MessageReceiveTimeout.RestrictToList",
+          "fxCm:MessageReceiveTimeout.SelectionDescriptions",
+          "fxCm:ReceiveQos",
+          "fxCm:ReceiveQos.RestrictToList",
+          "fxCm:ReceiveQos.SelectionDescriptions"
+        ]
+      },
+      "SecurityKeyServerAddressType": {
+        "browseName": "SecurityKeyServerAddressType",
+        "kind": "VariableType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/9.3.2",
+        "subtypeOf": "ua:BaseDataVariableType",
+        "components": [
+          {
+            "browseName": "fxCm:Address",
+            "nodeClass": "Variable",
+            "dataType": "UriString",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:SecurityPolicyUri",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ServerUri",
+            "nodeClass": "Variable",
+            "dataType": "UriString",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:UsePushModel",
+            "nodeClass": "Variable",
+            "dataType": "Boolean",
+            "typeDefinition": "BaseDataVariableType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:Address.RestrictToList",
+          "fxCm:Address.SelectionDescriptions",
+          "fxCm:SecurityPolicyUri.RestrictToList",
+          "fxCm:SecurityPolicyUri.SelectionDescriptions",
+          "fxCm:ServerUri.RestrictToList",
+          "fxCm:ServerUri.SelectionDescriptions"
+        ]
+      },
+      "ServerAddressType": {
+        "browseName": "ServerAddressType",
+        "kind": "VariableType",
+        "namespace": "fxCm",
+        "isAbstract": false,
+        "specRef": "https://reference.opcfoundation.org/UAFX/Part81/v100/docs/9.2.2",
+        "subtypeOf": "ua:BaseDataVariableType",
+        "components": [
+          {
+            "browseName": "fxCm:Address",
+            "nodeClass": "Variable",
+            "dataType": "UriString",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:SecurityMode",
+            "nodeClass": "Variable",
+            "dataType": "MessageSecurityMode",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:SecurityPolicyUri",
+            "nodeClass": "Variable",
+            "dataType": "String",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          },
+          {
+            "browseName": "fxCm:ServerUri",
+            "nodeClass": "Variable",
+            "dataType": "UriString",
+            "typeDefinition": "SelectionListType",
+            "modellingRule": "Mandatory"
+          }
+        ],
+        "properties": [],
+        "methods": [],
+        "interfaces": [],
+        "availableOptionals": [
+          "fxCm:Address.RestrictToList",
+          "fxCm:Address.SelectionDescriptions",
+          "fxCm:SecurityMode.RestrictToList",
+          "fxCm:SecurityMode.SelectionDescriptions",
+          "fxCm:SecurityPolicyUri.RestrictToList",
+          "fxCm:SecurityPolicyUri.SelectionDescriptions",
+          "fxCm:ServerUri.RestrictToList",
+          "fxCm:ServerUri.SelectionDescriptions"
         ]
       }
     }
