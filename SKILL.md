@@ -65,8 +65,9 @@ call that says none of this is refused with `SYMBOLS_DECISION_REQUIRED`.
 
 When the server runs locally, prefer `model_path` over `yaml`: the server then
 reads the paired CSV itself and writes the outputs beside the model, so
-nothing has to be carried between calls. Likewise `xml_path` for
-`opcua_model_reverse`. Follow the `hints` and `next_steps` in each result.
+nothing has to be carried between calls. Likewise `model_path` for
+`opcua_model_validate`, whose imports then resolve from the model's folder and
+its `deps/`, and `xml_path` for `opcua_model_reverse`. Follow the `hints` and `next_steps` in each result.
 
 ## Model generation and validation (API key)
 

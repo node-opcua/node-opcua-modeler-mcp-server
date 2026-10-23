@@ -30,6 +30,7 @@ import {
 import { cloudFetch, formatCloudError } from "./cloud.js";
 import { GENERATE_OUTPUT_SCHEMA, type GenerateArgs, generateInputSchema, runGenerate } from "./generate-tool.js";
 import { isLocalBackend } from "./local.js";
+import { runValidate, type ValidateArgs, validateInputSchema } from "./validate-tool.js";
 
 /**
  * The version reported in the MCP handshake — read from package.json rather
@@ -335,27 +336,14 @@ export function createServer(options: ServerOptions = {}): McpServer {
         "Validate an OPC UA YAML model for correctness. Returns diagnostics " +
         "with severity (error/warning/info), codes, messages, and line numbers. " +
         "Works without an API key (limited to 50 calls/day). " +
+        (fileAccess
+          ? "Prefer model_path when the model is a file: its imports then resolve from the model's own folder " +
+            "(beside it and ./deps/), which an import naming only a uri: needs. "
+          : "") +
         "ALWAYS validate before generating.",
-      inputSchema: {
-        yaml: z.string().describe("The full YAML model source to validate")
-      }
+      inputSchema: validateInputSchema(fileAccess)
     },
-    async ({ yaml }) => {
-      const result = await cloudFetch<{
-        valid: boolean;
-        diagnostics: Array<{ severity: string; code: string; message: string; line?: number }>;
-      }>("/api/v1/validate", yaml, "text/yaml");
-
-      if (!result.ok) {
-        return {
-          content: [{ type: "text" as const, text: formatCloudError(result.error) }],
-          isError: true
-        };
-      }
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(result.data) }]
-      };
-    }
+    async (args) => runValidate(args as ValidateArgs, { fileAccess })
   );
 
   // ── 8. opcua_model_generate ───────────────────────────────────────────

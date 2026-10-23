@@ -240,6 +240,12 @@ Validate an OPC UA YAML model for correctness. Returns diagnostics with severity
   }
 ```
 
+**By path (local stdio server only).** Pass `model_path` instead of `yaml`. With `OPCUA_MODELER_BACKEND=local`, the model's `imports:` then resolve from its own folder (beside it, then `deps/`), as in VS Code: an import that names only a `uri:` needs this, because a model sent as text resolves against the folder `opcua-modeler serve` was started in. The hosted connector never takes paths.
+
+```
+→ opcua_model_validate({ model_path: "C:/models/cip/cip-example.model.yaml" })
+```
+
 ### `opcua_model_generate` ☁️
 
 Generate OPC UA NodeSet2.xml and the symbols CSV from a validated YAML model. Requires an API key.
