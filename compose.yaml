@@ -1,0 +1,34 @@
+# MCP server behind Caddy (automatic HTTPS via Let's Encrypt).
+#   MCP_HOSTNAME=mcp.example.com docker compose up -d --build
+# The hostname's DNS must point at this machine, with ports 80 and 443 open.
+services:
+  mcp:
+    build: .
+    restart: unless-stopped
+    environment:
+      OPCUA_MODELER_API_KEY: ${OPCUA_MODELER_API_KEY:-}
+      OPCUA_MODELER_BACKEND: ${OPCUA_MODELER_BACKEND:-}
+      MCP_HTTP_AUTH_TOKEN: ${MCP_HTTP_AUTH_TOKEN:-}
+      PORT: "8807"
+    expose:
+      - "8807"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - mcp
+    environment:
+      MCP_HOSTNAME: ${MCP_HOSTNAME:?set MCP_HOSTNAME to the public DNS name}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

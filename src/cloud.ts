@@ -52,6 +52,17 @@ export interface RequestContext {
   apiUrl?: string;
   /** Extra headers to send upstream (e.g. x-forwarded-for). */
   forwardHeaders?: Record<string, string>;
+  /**
+   * The caller's own Sterfive API key, for a hosted connector where each user
+   * brings theirs (an "API token" in the client's connector settings). Takes
+   * precedence over OPCUA_MODELER_API_KEY. Never log it.
+   */
+  apiKey?: string;
+  /**
+   * Set by `handleMcpHttpRequest`, so auth hints point a remote-connector user
+   * at their connector settings rather than an env var they cannot reach.
+   */
+  transport?: "http";
 }
 
 const requestContext = new AsyncLocalStorage<RequestContext>();
@@ -83,7 +94,25 @@ function getApiUrl(): string {
 }
 
 function getApiKey(): string | undefined {
-  return process.env.OPCUA_MODELER_API_KEY;
+  return requestContext.getStore()?.apiKey || process.env.OPCUA_MODELER_API_KEY;
+}
+
+/**
+ * Where the user puts their key, phrased for how they reached this server: an
+ * env var is the answer for stdio, and nonsense for a hosted connector whose
+ * process the user never sees.
+ */
+function keyLocation(): { configure: string; update: string } {
+  if (requestContext.getStore()?.transport === "http") {
+    return {
+      configure: "This connector reads the key from the API token (Bearer) set in your MCP client's connector settings.",
+      update: "then update the API token in your connector settings."
+    };
+  }
+  return {
+    configure: "This MCP server reads the key from OPCUA_MODELER_API_KEY in its config.",
+    update: "then update OPCUA_MODELER_API_KEY in this MCP server's config."
+  };
 }
 
 /**
@@ -222,18 +251,16 @@ export async function cloudFetch<T = unknown>(
 
         // Expired beta key: the fix is a rotation, not a signup — surface
         // the renewal link verbatim so agents can relay it to the user.
+        const where = keyLocation();
         if (code === "key_expired") {
           const renewalNote =
-            `Rotate your key at ${KEY_SETTINGS_URL} ("Rotate & extend" grants a fresh 30-day window), ` +
-            "then update OPCUA_MODELER_API_KEY in this MCP server's config.";
+            `Rotate your key at ${KEY_SETTINGS_URL} ("Rotate & extend" grants a fresh 30-day window), ` + where.update;
           return {
             ok: false,
             error: {
               error: detail || "Your OPC UA Modeler API key has expired.",
               status: response.status,
-              hint: hint?.includes(KEY_SETTINGS_URL)
-                ? `${hint} — then update OPCUA_MODELER_API_KEY in this MCP server's config.`
-                : renewalNote
+              hint: hint?.includes(KEY_SETTINGS_URL) ? `${hint} — ${where.update}` : renewalNote
             }
           };
         }
@@ -244,12 +271,11 @@ export async function cloudFetch<T = unknown>(
         // pitches live in the documentation, not in an error an agent relays.
         // Saying which env var is read, and where the docs are, is operational
         // fact and stays.
-        const mcpNote =
-          "This MCP server reads the key from OPCUA_MODELER_API_KEY in its config. " + `See ${DOCS_URL} for how to obtain one.`;
+        const mcpNote = `${where.configure} See ${DOCS_URL} for how to obtain one.`;
         return {
           ok: false,
           error: {
-            error: detail || "Authentication required. Set OPCUA_MODELER_API_KEY in your MCP server config.",
+            error: detail || `Authentication required. ${where.configure}`,
             status: response.status,
             hint: hint ? `${hint} — ${mcpNote}` : mcpNote
           }

@@ -19,7 +19,8 @@
     "./catalog/*": "./catalog/*"
   },
   "bin": {
-    "node-opcua-modeler-mcp": "dist/index.js"
+    "node-opcua-modeler-mcp": "dist/index.js",
+    "node-opcua-modeler-mcp-http": "dist/http-cli.js"
   },
   "files": [
     "dist/",
@@ -64,5 +65,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/node-opcua/node-opcua-modeler-mcp-server.git"
+  },
+  "homepage": "https://opcua-modeler.sterfive.io",
+  "bugs": {
+    "url": "https://github.com/node-opcua/node-opcua-modeler-mcp-server/issues"
   }
 }

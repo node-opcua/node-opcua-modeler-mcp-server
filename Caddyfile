@@ -1,0 +1,18 @@
+# No `encode`: bodies (request and response) pass through unmodified.
+{$MCP_HOSTNAME} {
+	header {
+		Access-Control-Allow-Origin "*"
+		Access-Control-Allow-Methods "POST, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type, Authorization, MCP-Protocol-Version, Mcp-Session-Id"
+		Access-Control-Expose-Headers "Mcp-Session-Id"
+	}
+
+	@preflight method OPTIONS
+	respond @preflight 204
+
+	# request bodies are streamed through untouched; flush_interval -1 sends
+	# response bytes as soon as the upstream writes them
+	reverse_proxy mcp:8807 {
+		flush_interval -1
+	}
+}

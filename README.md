@@ -42,6 +42,36 @@ Add to your `claude_desktop_config.json`:
 
 > **Note:** The API key is optional for discovery tools (offline) and `opcua_model_validate` (50 anonymous calls/day). It is required for `opcua_model_generate`, `opcua_model_reverse`, and `opcua_model_create`. Register at [opcua-modeler.sterfive.io](https://opcua-modeler.sterfive.io/signup) and create a key under **Settings → API** — the free tier gives 25 calls/day for 90 days; see [pricing](https://opcua-modeler.sterfive.io/pricing) for paid plans.
 
+### With VS Code (GitHub Copilot)
+
+Add to `.vscode/mcp.json`. VS Code's top-level key is `servers`, not
+`mcpServers`; a file copied from the Claude Desktop example is silently ignored.
+
+```json
+{
+  "inputs": [
+    { "type": "promptString", "id": "opcua-modeler-api-key", "description": "OPC UA Modeler API key (optional)", "password": true }
+  ],
+  "servers": {
+    "opcua-modeler": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "node-opcua-modeler-mcp-server"],
+      "env": { "OPCUA_MODELER_API_KEY": "${input:opcua-modeler-api-key}" }
+    }
+  }
+}
+```
+
+Click **Start** above the server entry, then use Copilot Chat in **Agent** mode
+with the tools ticked under the tools icon. **MCP: List Servers → Show Output**
+shows why a server failed to start.
+
+When VS Code is connected to **WSL**, this server runs inside WSL and needs
+Node.js there. VS Code does not start it from an interactive shell, so an nvm
+install is not on its `PATH`: set `command` to the absolute path printed by
+`which npx`.
+
 ### With any MCP client
 
 ```bash
@@ -49,6 +79,12 @@ npx node-opcua-modeler-mcp-server
 ```
 
 The server communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io).
+
+### As a remote connector (Mistral, claude.ai, any streamable-HTTP client)
+
+Use the hosted endpoint `https://api.opcua-modeler.sterfive.io/mcp`, or host your
+own with `node-opcua-modeler-mcp-http` (or `--http`), Docker, or the bundled
+Caddy compose file for HTTPS: see [docs/http-hosting.md](docs/http-hosting.md).
 
 ### Using a local backend instead of the hosted API
 
@@ -94,6 +130,15 @@ its credentials automatically.
 - The seven discovery tools are local to this package and work offline on either
   setting.
 - `opcua_model_create` (AI generation) is available on the `cloud` backend only.
+- `serve` and this MCP server must run as the same user on the same system: they
+  talk over a named pipe or Unix socket, which cannot cross from Windows into
+  WSL. Under WSL, start `serve` in a WSL terminal.
+- On Linux, macOS and WSL, `serve` publishes its discovery file in
+  `$XDG_RUNTIME_DIR/opcua-modeler/` and copies it to `/tmp/opcua-modeler-<user>/`;
+  this server looks in both. Editors do not always pass `XDG_RUNTIME_DIR` to the
+  servers they start (VS Code under WSL may not), and the copy is what lets the
+  two meet. With an older `serve`, set `XDG_RUNTIME_DIR` in this server's `env`
+  to the value it has in the terminal running `serve`.
 
 ## Tools
 

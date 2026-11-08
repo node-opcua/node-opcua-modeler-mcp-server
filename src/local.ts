@@ -49,6 +49,10 @@ export function discoveryFilePath(env: NodeJS.ProcessEnv = process.env): string 
   if (env.XDG_RUNTIME_DIR) {
     return path.join(env.XDG_RUNTIME_DIR, "opcua-modeler", "serve.json");
   }
+  return fallbackDiscoveryFilePath();
+}
+
+function fallbackDiscoveryFilePath(): string {
   let user = "user";
   try {
     user = os.userInfo().username;
@@ -56,6 +60,39 @@ export function discoveryFilePath(env: NodeJS.ProcessEnv = process.env): string 
     // Containers without a passwd entry.
   }
   return path.join(os.tmpdir(), `opcua-modeler-${user}`, "serve.json");
+}
+
+/**
+ * Every place a running server may have published itself, in lookup order.
+ *
+ * XDG_RUNTIME_DIR is not reliably shared between a terminal and what an editor
+ * spawns (WSL: the shell running `serve` has it, the VS Code server may not).
+ * A server started WITHOUT it publishes only in the temp fallback, so a client
+ * that has it looks there second. The reverse case is covered by the server,
+ * which mirrors its file into the fallback.
+ */
+export function discoveryFileCandidates(env: NodeJS.ProcessEnv = process.env): string[] {
+  const primary = discoveryFilePath(env);
+  if (process.platform === "win32") return [primary];
+  const fallback = fallbackDiscoveryFilePath();
+  return path.resolve(fallback) === path.resolve(primary) ? [primary] : [primary, fallback];
+}
+
+/**
+ * True when the temp fallback directory is ours alone.
+ *
+ * It sits in a shared /tmp: another account could create it first and plant a
+ * discovery file pointing at its own socket, then receive the user's models.
+ */
+function isPrivateDir(dir: string): boolean {
+  try {
+    const stat = fs.lstatSync(dir);
+    if (!stat.isDirectory()) return false;
+    if (typeof process.getuid === "function" && stat.uid !== process.getuid()) return false;
+    return (stat.mode & 0o077) === 0;
+  } catch {
+    return false;
+  }
 }
 
 export interface LocalEndpoint {
@@ -87,15 +124,29 @@ const START_HINT =
 export function readLocalEndpoint(
   env: NodeJS.ProcessEnv = process.env
 ): { ok: true; endpoint: LocalEndpoint } | { ok: false; error: { error: string; hint: string } } {
-  const file = discoveryFilePath(env);
+  const candidates = discoveryFileCandidates(env);
 
-  let raw: string;
-  try {
-    raw = fs.readFileSync(file, "utf-8");
-  } catch {
+  let file = "";
+  let raw: string | undefined;
+  for (const [index, candidate] of candidates.entries()) {
+    // Only the temp fallback can be squatted; the first candidate is either
+    // XDG_RUNTIME_DIR or the fallback itself when nothing better exists.
+    if (index > 0 && !isPrivateDir(path.dirname(candidate))) continue;
+    try {
+      raw = fs.readFileSync(candidate, "utf-8");
+      file = candidate;
+      break;
+    } catch {
+      // Not published here — try the next place.
+    }
+  }
+  if (raw === undefined) {
     return {
       ok: false,
-      error: { error: `No on-premise OPC UA Modeler server found (expected ${file}).`, hint: START_HINT }
+      error: {
+        error: `No on-premise OPC UA Modeler server found (expected ${candidates.join(" or ")}).`,
+        hint: `${START_HINT} The server and this MCP server must run as the same user on the same system (under WSL: both inside WSL).`
+      }
     };
   }
 

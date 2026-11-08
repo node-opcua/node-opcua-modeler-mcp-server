@@ -22,7 +22,12 @@ async function main() {
   console.error("opcua-modeler MCP server running on stdio");
 }
 
-main().catch((err) => {
-  console.error("Fatal error starting MCP server:", err);
-  process.exit(1);
-});
+if (process.argv.includes("--http")) {
+  // remote (streamable HTTP) hosting; stdio stays the default
+  await import("./http-cli.js");
+} else {
+  main().catch((err) => {
+    console.error("Fatal error starting MCP server:", err);
+    process.exit(1);
+  });
+}

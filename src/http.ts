@@ -68,9 +68,9 @@ export async function handleMcpHttpRequest(request: Request, context?: RequestCo
   });
 
   await server.connect(transport);
-  const response = context
-    ? await withRequestContext(context, () => transport.handleRequest(request))
-    : await transport.handleRequest(request);
+  // Always run in a context, even an empty one, so auth hints know the call
+  // came over HTTP; an absent apiUrl/apiKey still falls back to the env vars.
+  const response = await withRequestContext({ ...context, transport: "http" }, () => transport.handleRequest(request));
   await transport.close();
   return response;
 }
